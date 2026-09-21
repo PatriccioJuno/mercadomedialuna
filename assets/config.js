@@ -27,7 +27,9 @@ window.MML = {
   /* ---- 2 · WhatsApp -------------------------------------------------------
      Número en formato internacional, solo dígitos. Ej: '51987654321'.
      Número del proyecto confirmado por Patriccio el 17/09/2026 (+51 992 755 150).
-     Si se vacía, los botones de WhatsApp llevan al formulario. */
+     Si se vacía, los botones de WhatsApp llevan al formulario.
+     Si cambias este número, cámbialo también en el <noscript> de index.html
+     (sección #hablemos), que no puede leer este archivo. */
   whatsapp: '51992755150',
   whatsappTexto: 'Hola, vi la web de Mercado Media Luna y quiero información.',
 

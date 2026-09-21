@@ -1,11 +1,11 @@
 /* =========================================================================
-   Mercado Media Luna — embudo de calificación (estilo chat)
+   Mercado Media Luna — embudo de calificación (chat automático)
    Las preguntas salen del guion de calificación del proyecto
-   (02-marketing/marca/OPERACION-WHATSAPP-HERRAMIENTAS-Y-LOTE.md: ¿operar o
-   invertir?, ¿cómo lo pensaba pagar?, ¿decide solo?) más las que el equipo
-   necesita antes de la primera conversación.
-   Regla: ninguna respuesta del chat promete precio, financiamiento,
-   rentabilidad, fechas ni disponibilidad.
+   (02-marketing/marca/OPERACION-WHATSAPP-HERRAMIENTAS-Y-LOTE.md §1.4: operar
+   o invertir, si compró antes, cómo paga, si decide solo) más las que el
+   equipo necesita antes de la primera conversación.
+   Reglas: el chat dice que es automático, y ninguna respuesta promete
+   precio, financiamiento, rentabilidad, fechas ni disponibilidad.
    ========================================================================= */
 (function () {
   'use strict';
@@ -21,6 +21,9 @@
   var atras = raiz.querySelector('.chat-atras');
   var reducido = window.matchMedia('(prefers-reduced-motion: reduce)');
   var destino = CFG.destinoFormulario === 'crm' ? 'crm' : 'whatsapp';
+  /* en modo WhatsApp el visitante escribe desde su propio número: no hace falta pedirlo */
+  var pideTelefono = destino === 'crm';
+  zona.tabIndex = -1;   // ancla del foco mientras se cambia el contenido
 
   /* ---------------------------------------------------------------------
      El guion
@@ -31,19 +34,28 @@
       id: 'uso', texto: '¿Para qué quieres el puesto?',
       opciones: [
         { v: 'operar', t: 'Para trabajarlo yo' },
-        { v: 'invertir', t: 'Para alquilarlo' },
+        { v: 'invertir', t: 'Como inversión' },
         { v: 'viendo', t: 'Todavía lo estoy viendo' }
       ],
-      eco: { invertir: 'Te digo algo de frente: no damos números de rentabilidad que no podamos sostener. Todo lo demás te lo mostramos.' }
+      eco: { invertir: 'De frente: hoy no tenemos un dato de renta que podamos respaldar, y no te vamos a inventar uno. Lo que sí te mostramos es la obra como está.' }
     },
     {
       id: 'alquiler', texto: '¿Hoy pagas alquiler por tu puesto o local?',
       opciones: [
         { v: 'si', t: 'Sí, pago alquiler' },
+        { v: 'calle', t: 'Vendo en la calle o en feria' },
         { v: 'propio', t: 'No, ya tengo local propio' },
         { v: 'sin_negocio', t: 'Todavía no tengo negocio' }
       ],
       eco: { si: 'Entonces sabes lo que es pagar cada mes por un sitio que no es tuyo.' }
+    },
+    {
+      id: 'antes', texto: '¿Ya compraste un puesto o local antes?',
+      opciones: [
+        { v: 'si', t: 'Sí, ya compré' },
+        { v: 'no', t: 'No, sería la primera vez' }
+      ],
+      eco: { no: 'Normal. Antes de que pagues algo, te explicamos por escrito qué estás comprando.' }
     },
     {
       id: 'giro', texto: '¿Qué vendes, o qué te gustaría vender?',
@@ -53,7 +65,7 @@
         { v: 'frutas', t: 'Frutas y verduras' },
         { v: 'carnes', t: 'Carnes, pollo o pescado' },
         { v: 'comida', t: 'Comida o jugos' },
-        { v: 'otro', t: 'Otro rubro' }
+        { v: 'otro', t: 'Otra cosa' }
       ]
     },
     {
@@ -73,18 +85,18 @@
       id: 'pago', texto: '¿Cómo pensabas pagarlo?',
       opciones: [
         { v: 'ahorros', t: 'Con mis ahorros' },
-        { v: 'partes', t: 'Necesito pagarlo en partes' },
+        { v: 'partes', t: 'Hoy no tengo el monto completo' },
         { v: 'nose', t: 'Todavía no lo sé' }
       ],
-      eco: { partes: 'Anotado. Eso se conversa con calma, y todo queda por escrito.' }
+      eco: { partes: 'Anotado. Se lo pasamos tal cual al equipo.' }
     },
     {
       id: 'decide', texto: '¿Quién toma la decisión?',
       opciones: [
-        { v: 'solo', t: 'Yo solo' },
-        { v: 'familia', t: 'Con mi familia o socio' }
+        { v: 'solo', t: 'Lo decido yo' },
+        { v: 'familia', t: 'Con mi familia o mi socio' }
       ],
-      eco: { familia: 'Tiene sentido. Pueden venir juntos a ver la obra.' }
+      eco: { familia: 'Tiene sentido. Pueden ver la obra juntos, en persona o por videollamada.' }
     },
     {
       id: 'visita', texto: '¿Cuándo te gustaría ver la obra?',
@@ -100,52 +112,69 @@
     }
   ];
 
-  /* etiquetas cortas para el resumen y el mensaje de WhatsApp */
+  /* rótulos del resumen y del mensaje de WhatsApp */
   var ROTULOS = {
-    uso: 'Quiero el puesto', alquiler: 'Hoy', giro: 'Rubro', zona: 'Escribo desde',
-    pago: 'Pago', decide: 'Decido', visita: 'Visita'
+    uso: 'El puesto', alquiler: 'Hoy', antes: 'Compra previa', giro: 'Rubro',
+    zona: 'Escribo desde', pago: 'Pago', decide: 'Decisión', visita: 'Visita'
   };
 
+  var SALUDO = [
+    'Hola. Este es el chat automático de Mercado Media Luna.',
+    pideTelefono
+      ? 'Te hago unas preguntas rápidas para ver si esto te sirve. Al final te pedimos tu nombre y tu WhatsApp, nada más.'
+      : 'Te hago unas preguntas rápidas para ver si esto te sirve. Al final te pedimos tu nombre, nada más.'
+  ];
+  var PREGUNTA_NOMBRE = pideTelefono ? 'Ya casi. ¿Cómo te llamas?' : 'Último paso. ¿Cómo te llamas?';
+  var PREGUNTA_TELEFONO = '¿A qué número de WhatsApp te escribimos?';
+
   /* ---------------------------------------------------------------------
-     Estado: lo que respondió, y en qué paso va
+     Estado
      --------------------------------------------------------------------- */
   var respuestas = {};   // id → valor
   var textos = {};       // id → texto elegido
-  var contacto = { nombre: '', telefono: '' };
-  var turno = 0;         // invalida animaciones en curso cuando se vuelve atrás
+  var contacto = { nombre: '', telefono: '', telefonoVisible: '' };
+  var turno = 0;         // invalida animaciones en curso
   var iniciado = false;
+  var interactuo = false;
 
   function preguntasActivas() {
     return PREGUNTAS.filter(function (p) { return !(p.saltar && p.saltar(respuestas)); });
   }
   function opcionesDe(p) { return typeof p.opciones === 'function' ? p.opciones(respuestas) : p.opciones; }
+  function preguntaPorId(id) { return PREGUNTAS.filter(function (q) { return q.id === id; })[0]; }
 
   /* el siguiente paso pendiente: una pregunta, 'nombre', 'telefono' o 'resumen' */
   function pasoActual() {
     var activas = preguntasActivas();
     for (var i = 0; i < activas.length; i++) if (!(activas[i].id in respuestas)) return activas[i];
     if (!contacto.nombre) return 'nombre';
-    if (!contacto.telefono) return 'telefono';
+    if (pideTelefono && !contacto.telefono) return 'telefono';
     return 'resumen';
   }
-  function totalPasos() { return preguntasActivas().length + 2; }
+  function claveDe(p) { return typeof p === 'object' ? p.id : p; }
+
+  /* pasos ya hechos, en orden: sirve para contar y para volver atrás */
   function pasosHechos() {
-    return preguntasActivas().filter(function (p) { return p.id in respuestas; }).length +
-      (contacto.nombre ? 1 : 0) + (contacto.telefono ? 1 : 0);
+    var hechos = preguntasActivas().filter(function (p) { return p.id in respuestas; }).map(function (p) { return p.id; });
+    if (contacto.nombre) hechos.push('nombre');
+    if (pideTelefono && contacto.telefono) hechos.push('telefono');
+    return hechos;
   }
+  function totalPasos() { return preguntasActivas().length + (pideTelefono ? 2 : 1); }
 
   /* ---------------------------------------------------------------------
-     Burbujas
+     Burbujas: cada una sabe a qué paso pertenece, para poder recortar
      --------------------------------------------------------------------- */
-  function burbuja(clase, texto) {
+  function burbuja(clase, texto, paso) {
     var b = document.createElement('div');
     b.className = 'msg ' + clase;
     b.textContent = texto;
+    b.setAttribute('data-paso', paso || '');
     log.appendChild(b);
     return b;
   }
-  function bot(texto) { return burbuja('msg-bot', texto); }
-  function yo(texto) { return burbuja('msg-yo', texto); }
+  function bot(texto, paso) { return burbuja('msg-bot', texto, paso); }
+  function yo(texto, paso) { return burbuja('msg-yo', texto, paso); }
 
   function escribiendo() {
     var t = document.createElement('div');
@@ -158,16 +187,16 @@
 
   var esperar = function (ms) { return new Promise(function (r) { setTimeout(r, reducido.matches ? 0 : ms); }); };
 
-  /* escribe una o varias burbujas del bot con su pausa de "escribiendo" */
+  /* escribe burbujas del bot con su pausa de "escribiendo"; lineas = [{ texto, paso }] */
   function decir(lineas, miTurno) {
     return lineas.reduce(function (cadena, linea) {
       return cadena.then(function () {
         if (miTurno !== turno) return;
         var t = escribiendo();
-        mantenerVisible();
-        return esperar(Math.min(1100, 380 + linea.length * 11)).then(function () {
+        if (interactuo) mantenerVisible();
+        return esperar(Math.min(1100, 380 + linea.texto.length * 11)).then(function () {
           t.remove();
-          if (miTurno === turno) bot(linea);
+          if (miTurno === turno) bot(linea.texto, linea.paso);
         });
       });
     }, Promise.resolve());
@@ -180,55 +209,42 @@
     }
   }
 
+  /* el foco nunca cae a <body> cuando se borra el elemento que lo tenía */
+  function anclarFoco() {
+    var a = document.activeElement;
+    if (a && (zona.contains(a) || a === atras)) zona.focus({ preventScroll: true });
+  }
+
   function actualizarCabecera() {
-    var hechos = pasosHechos(), total = totalPasos();
+    var hechos = pasosHechos().length, total = totalPasos();
     barra.style.transform = 'scaleX(' + (hechos / total).toFixed(3) + ')';
-    var p = pasoActual();
-    pasoTxt.textContent = p === 'resumen' ? 'Listo para enviar' : 'Paso ' + Math.min(hechos + 1, total) + ' de ' + total;
+    pasoTxt.textContent = pasoActual() === 'resumen' ? 'Listo para enviar' : 'Paso ' + Math.min(hechos + 1, total) + ' de ' + total;
+    if (hechos === 0 && document.activeElement === atras) zona.focus({ preventScroll: true });
     atras.hidden = hechos === 0;
   }
 
   /* ---------------------------------------------------------------------
-     Pintar la conversación completa desde el estado (sin animar),
-     y animar solo la pregunta nueva
+     Avanzar: animar solo lo nuevo
      --------------------------------------------------------------------- */
-  var SALUDO = [
-    'Hola. Te hago unas preguntas rápidas para saber si esto te sirve.',
-    'Se responden con un toque. No te pedimos nada más que tu nombre y tu número al final.'
-  ];
-
-  function pintarHistorial() {
-    log.textContent = '';
-    SALUDO.forEach(bot);
-    preguntasActivas().forEach(function (p) {
-      if (!(p.id in respuestas)) return;
-      bot(p.texto);
-      yo(textos[p.id]);
-      var eco = p.eco && p.eco[respuestas[p.id]];
-      if (eco) bot(eco);
-    });
-    if (contacto.nombre) { bot('Último paso. ¿Cómo te llamas?'); yo(contacto.nombre); }
-    if (contacto.telefono) { bot('¿A qué número de WhatsApp te escribimos?'); yo(contacto.telefonoVisible || contacto.telefono); }
-  }
-
-  function siguiente(animarDesde) {
+  function siguiente(ecos) {
     var miTurno = ++turno;
     zona.textContent = '';
     actualizarCabecera();
     var p = pasoActual();
+    var clave = claveDe(p);
 
-    var lineas = (animarDesde || []).slice();
-    if (typeof p === 'object') lineas.push(p.texto);
-    else if (p === 'nombre') lineas.push('Último paso. ¿Cómo te llamas?');
-    else if (p === 'telefono') lineas.push('¿A qué número de WhatsApp te escribimos?');
-    else lineas.push(contacto.nombre.split(' ')[0] + ', esto es lo que le llega al equipo:');
+    var lineas = (ecos || []).slice();
+    if (typeof p === 'object') lineas.push({ texto: p.texto, paso: clave });
+    else if (p === 'nombre') lineas.push({ texto: PREGUNTA_NOMBRE, paso: clave });
+    else if (p === 'telefono') lineas.push({ texto: PREGUNTA_TELEFONO, paso: clave });
+    else lineas.push({ texto: contacto.nombre.split(' ')[0] + ', esto es lo que le llega al equipo:', paso: 'resumen' });
 
     decir(lineas, miTurno).then(function () {
       if (miTurno !== turno) return;
       if (typeof p === 'object') mostrarOpciones(p);
       else if (p === 'nombre' || p === 'telefono') mostrarCampo(p);
       else mostrarResumen();
-      mantenerVisible();
+      if (interactuo) mantenerVisible();
     });
   }
 
@@ -257,19 +273,20 @@
   }
 
   function responder(p, o) {
+    if (p.id in respuestas) return;          // doble toque: la primera respuesta manda
+    interactuo = true;
+    anclarFoco();
     respuestas[p.id] = o.v;
     textos[p.id] = o.t;
-    // si cambió una respuesta que decide otras (zona → visita), la dependiente se vuelve a preguntar
+    if (p.id === 'uso' && o.v === 'invertir') { delete respuestas.giro; delete textos.giro; }
     if (p.id === 'zona' && respuestas.visita) {
-      var visita = PREGUNTAS.filter(function (q) { return q.id === 'visita'; })[0];
-      var valida = opcionesDe(visita).some(function (x) { return x.v === respuestas.visita; });
+      var valida = opcionesDe(preguntaPorId('visita')).some(function (x) { return x.v === respuestas.visita; });
       if (!valida) { delete respuestas.visita; delete textos.visita; }
     }
-    if (p.id === 'uso' && o.v === 'invertir') { delete respuestas.giro; delete textos.giro; }
     zona.textContent = '';
-    yo(o.t);
+    yo(o.t, p.id);
     var eco = p.eco && p.eco[o.v];
-    siguiente(eco ? [eco] : []);
+    siguiente(eco ? [{ texto: eco, paso: p.id }] : []);
   }
 
   function mostrarCampo(tipo) {
@@ -278,37 +295,45 @@
     f.noValidate = true;
     var id = 'chat-' + tipo;
     var esTel = tipo === 'telefono';
+    var fuera = respuestas.zona === 'extranjero';
+    var ayuda = fuera ? 'Escríbelo con + y el código de tu país.' : 'Celular de Perú. Si estás fuera, ponlo con el código de tu país.';
     f.innerHTML =
       '<label class="sr" for="' + id + '">' + (esTel ? 'Tu número de WhatsApp' : 'Tu nombre') + '</label>' +
       '<input id="' + id + '" type="' + (esTel ? 'tel' : 'text') + '" ' +
-      (esTel ? 'inputmode="tel" autocomplete="tel" placeholder="999 999 999"' : 'autocomplete="name" placeholder="Nombre y apellido"') +
-      ' aria-describedby="' + id + '-error" required>' +
+      (esTel ? 'inputmode="tel" autocomplete="tel" placeholder="' + (fuera ? '+56 9 1234 5678' : '999 999 999') + '"' : 'autocomplete="name" placeholder="Nombre y apellido"') +
+      ' aria-describedby="' + id + '-error' + (esTel ? ' ' + id + '-ayuda' : '') + '" required>' +
       '<button type="submit" class="chat-enviar" aria-label="Enviar">' +
       '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M3.4 20.4 21 12 3.4 3.6l-.02 6.53L15 12 3.38 13.87z"/></svg></button>' +
       '<p class="chat-error" id="' + id + '-error" role="alert"></p>' +
-      (esTel ? '<p class="chat-ayuda">Celular de Perú. Si estás fuera, ponlo con el código de tu país.</p>' : '') +
+      (esTel ? '<p class="chat-ayuda" id="' + id + '-ayuda"></p>' : '') +
       '<div class="trampa" aria-hidden="true"><input type="text" name="web" tabindex="-1" autocomplete="off"></div>';
+    if (esTel) f.querySelector('.chat-ayuda').textContent = ayuda;
     var input = f.querySelector('input');
     var error = f.querySelector('.chat-error');
     f.addEventListener('submit', function (e) {
       e.preventDefault();
       if (f.querySelector('[name=web]').value) return;      // bot atrapado: no hace nada
+      interactuo = true;
       var v = input.value.trim();
       if (!esTel) {
         if (v.length < 2) { error.textContent = 'Escribe tu nombre, por favor.'; input.focus(); return; }
+        anclarFoco();
         contacto.nombre = v.replace(/\s+/g, ' ');
         zona.textContent = '';
-        yo(contacto.nombre);
-        siguiente();
+        yo(contacto.nombre, 'nombre');
       } else {
-        var tel = normalizarTelefono(v);
-        if (!tel) { error.textContent = 'Revisa el número. Un celular de Perú son 9 dígitos y empieza en 9.'; input.focus(); return; }
+        var tel = normalizarTelefono(v, fuera);
+        if (!tel) {
+          error.textContent = fuera ? 'Escríbelo con + y el código de tu país.' : 'Revisa el número. Un celular de Perú son 9 dígitos y empieza en 9.';
+          input.focus(); return;
+        }
+        anclarFoco();
         contacto.telefono = tel;
         contacto.telefonoVisible = v;
         zona.textContent = '';
-        yo(v);
-        siguiente();
+        yo(v, 'telefono');
       }
+      siguiente();
     });
     zona.appendChild(f);
     input.focus({ preventScroll: true });
@@ -318,13 +343,21 @@
      Resumen y envío
      --------------------------------------------------------------------- */
   function lineasResumen() {
-    return preguntasActivas().map(function (p) { var t = textos[p.id]; return ROTULOS[p.id] + ': ' + t.charAt(0).toLowerCase() + t.slice(1); });
+    return preguntasActivas().map(function (p) {
+      var t = textos[p.id];
+      return ROTULOS[p.id] + ': ' + t.charAt(0).toLowerCase() + t.slice(1);
+    });
+  }
+
+  /* de dónde vino, para que el equipo mida qué canal trae gente */
+  function etiquetaOrigen() {
+    return { meta_ads: 'anuncio', referido: 'referido', base_historica: 'base', live: 'live' }[origenDesdeUTM(new URLSearchParams(location.search))] || 'web';
   }
 
   function mensajeWhatsApp() {
-    return 'Hola, soy ' + contacto.nombre + '. Vengo de la web de Mercado Media Luna.\n' +
+    return 'Hola, soy ' + contacto.nombre + '. Vengo de la web de Mercado Media Luna (' + etiquetaOrigen() + ').\n' +
       lineasResumen().map(function (l) { return '• ' + l; }).join('\n') +
-      '\nMi número: ' + contacto.telefono;
+      (contacto.telefono ? '\nMi número: ' + contacto.telefono : '');
   }
 
   /* prioridad interna para el CRM: nunca se le muestra al visitante */
@@ -332,18 +365,32 @@
     var s = 0;
     if (respuestas.uso === 'operar') s += 2;
     if (respuestas.alquiler === 'si') s += 2;
+    if (respuestas.alquiler === 'calle') s += 1;
     if (respuestas.pago === 'ahorros') s += 1;
     if (respuestas.decide === 'solo') s += 1;
     if (respuestas.visita === 'semana' || respuestas.visita === 'video_semana') s += 2;
     return s >= 6 ? 'alta' : s >= 3 ? 'media' : 'baja';
   }
 
+  function enlaceAviso(texto) {
+    var a = document.createElement('a');
+    a.href = 'privacidad.html';
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = texto;
+    return a;
+  }
+
   function mostrarResumen() {
     var tarjeta = document.createElement('div');
     tarjeta.className = 'chat-resumen';
+    tarjeta.tabIndex = -1;
+    tarjeta.setAttribute('role', 'group');
+    tarjeta.setAttribute('aria-label', 'Resumen de lo que respondiste');
     var lista = document.createElement('ul');
-    lineasResumen().concat(['Nombre: ' + contacto.nombre, 'WhatsApp: ' + (contacto.telefonoVisible || contacto.telefono)])
-      .forEach(function (l) { var li = document.createElement('li'); li.textContent = l; lista.appendChild(li); });
+    var filas = lineasResumen().concat(['Nombre: ' + contacto.nombre]);
+    if (contacto.telefono) filas.push('WhatsApp: ' + (contacto.telefonoVisible || contacto.telefono));
+    filas.forEach(function (l) { var li = document.createElement('li'); li.textContent = l; lista.appendChild(li); });
     tarjeta.appendChild(lista);
     zona.appendChild(tarjeta);
 
@@ -352,7 +399,10 @@
 
     if (destino === 'whatsapp') {
       if (!CFG.whatsapp) {
-        acciones.innerHTML = '<p class="chat-error">Estamos activando el número de WhatsApp. Vuelve en un rato.</p>';
+        var sin = document.createElement('p');
+        sin.className = 'chat-error';
+        sin.textContent = 'Estamos activando el número de WhatsApp. Vuelve en un rato.';
+        acciones.appendChild(sin);
         console.warn('[MML] Falta el número en assets/config.js (whatsapp).');
       } else {
         var a = document.createElement('a');
@@ -361,34 +411,53 @@
         a.target = '_blank';
         a.rel = 'noopener';
         a.textContent = 'Enviar por WhatsApp';
+        var avisado = false;
         a.addEventListener('click', function () {
+          if (avisado) return;
+          avisado = true;
           var miTurno = ++turno;
           setTimeout(function () {
-            decir(['Listo. Se abrió tu WhatsApp con el mensaje escrito. Dale enviar y te responde una persona del equipo.'], miTurno);
+            decir([{ texto: 'Listo. Si se abrió tu WhatsApp, dale enviar y te responde una persona del equipo.', paso: 'envio' }], miTurno);
           }, 400);
         });
         acciones.appendChild(a);
         var nota = document.createElement('p');
         nota.className = 'chat-ayuda';
-        nota.textContent = 'Se abre tu WhatsApp con este resumen ya escrito. Tú decides si lo mandas.';
+        nota.append('Se abre tu WhatsApp con este resumen ya escrito. Tú decides si lo mandas. Si lo mandas, lo recibe el equipo de SCP Inmobiliaria. ');
+        nota.append(enlaceAviso('Aviso de privacidad'), '.');
         acciones.appendChild(nota);
       }
     } else {
-      acciones.innerHTML =
-        '<label class="chat-ok"><input type="checkbox" id="chat-ok"> Autorizo que SCP Inmobiliaria use mis datos para contactarme sobre Mercado Media Luna. <a href="privacidad.html">Aviso de privacidad</a>.</label>' +
-        '<button type="button" class="btn btn-accent btn-big" id="chat-guardar">Enviar</button>' +
-        '<p class="chat-error" role="alert"></p>';
-      acciones.querySelector('#chat-guardar').addEventListener('click', enviarCRM);
+      var label = document.createElement('label');
+      label.className = 'chat-ok';
+      label.innerHTML = '<input type="checkbox" id="chat-ok" aria-describedby="chat-ok-aviso"> ';
+      label.append('Autorizo que SCP Inmobiliaria use mis datos para contactarme sobre Mercado Media Luna.');
+      var aviso = document.createElement('p');
+      aviso.className = 'chat-ayuda';
+      aviso.id = 'chat-ok-aviso';
+      aviso.append(enlaceAviso('Lee el aviso de privacidad'), ' (se abre en otra pestaña).');
+      var boton = document.createElement('button');
+      boton.type = 'button';
+      boton.className = 'btn btn-accent btn-big';
+      boton.id = 'chat-guardar';
+      boton.textContent = 'Enviar';
+      var err = document.createElement('p');
+      err.className = 'chat-error';
+      err.setAttribute('role', 'alert');
+      boton.addEventListener('click', enviarCRM);
+      acciones.append(label, aviso, boton, err);
     }
     zona.appendChild(acciones);
+    if (ultimoPorTeclado || document.activeElement === zona) tarjeta.focus({ preventScroll: true });
   }
 
   function enviarCRM() {
     var ok = document.getElementById('chat-ok');
     var boton = document.getElementById('chat-guardar');
     var error = zona.querySelector('.chat-acciones .chat-error');
+    if (boton.disabled) return;
     if (!ok.checked) { error.textContent = 'Necesitamos tu permiso para escribirte.'; ok.focus(); return; }
-    if (!(CFG.supabaseUrl && CFG.supabaseAnonKey)) { error.textContent = 'No pudimos enviarlo. Escríbenos por WhatsApp.'; return; }
+    if (!(CFG.supabaseUrl && CFG.supabaseAnonKey)) { falloConRespaldo(error, boton); return; }
     var params = new URLSearchParams(location.search);
     boton.disabled = true; boton.textContent = 'Enviando…';
     fetch(CFG.supabaseUrl.replace(/\/$/, '') + '/rest/v1/rpc/fn_captar_prospecto', {
@@ -430,13 +499,13 @@
   }
 
   /* ---------------------------------------------------------------------
-     Utilidades compartidas con el contrato del CRM
-     (07-crm/02-codigo/crm-mml/sql/12-captacion.sql)
+     Utilidades del contrato del CRM (07-crm/02-codigo/crm-mml/sql/12-captacion.sql)
      --------------------------------------------------------------------- */
-  function normalizarTelefono(v) {
+  function normalizarTelefono(v, fuera) {
     var s = String(v || '').replace(/[\s().-]/g, '');
     if (/^\+\d{8,15}$/.test(s)) return s;
-    if (/^00\d{6,15}$/.test(s)) return '+' + s.slice(2);
+    if (/^00\d{8,15}$/.test(s)) return '+' + s.slice(2);
+    if (fuera) return null;                 // desde el extranjero se pide el código de país
     if (/^9\d{8}$/.test(s)) return '+51' + s;
     if (/^51\d{9}$/.test(s)) return '+' + s;
     return null;
@@ -450,25 +519,32 @@
   }
 
   /* ---------------------------------------------------------------------
-     Atrás, y arranque cuando el chat entra en pantalla
+     Atrás: recorta la conversación desde el último paso (sin volver a
+     anunciar todo al lector de pantalla), y vuelve a preguntarlo
      --------------------------------------------------------------------- */
   atras.addEventListener('click', function () {
-    var p = pasoActual();
-    if (p === 'resumen') { contacto.telefono = ''; contacto.telefonoVisible = ''; }
-    else if (p === 'telefono') contacto.nombre = '';
-    else {
-      var hechas = preguntasActivas().filter(function (q) { return q.id in respuestas; });
-      var ultima = hechas[hechas.length - 1];
-      if (ultima) { delete respuestas[ultima.id]; delete textos[ultima.id]; }
-    }
-    pintarHistorial();
+    var hechos = pasosHechos();
+    var revertir = hechos[hechos.length - 1];
+    if (!revertir) return;
+    interactuo = true;
+    anclarFoco();
+    if (revertir === 'nombre') contacto.nombre = '';
+    else if (revertir === 'telefono') { contacto.telefono = ''; contacto.telefonoVisible = ''; }
+    else { delete respuestas[revertir]; delete textos[revertir]; }
+    var desde = log.querySelector('[data-paso="' + revertir + '"]');
+    while (desde && desde.nextSibling) desde.parentNode.removeChild(desde.nextSibling);
+    if (desde) desde.remove();
+    // sin eco repetido: la pregunta se vuelve a hacer una vez
     siguiente();
   });
 
+  /* ---------------------------------------------------------------------
+     Arranque cuando el chat entra en pantalla
+     --------------------------------------------------------------------- */
   function iniciar() {
     if (iniciado) return;
     iniciado = true;
-    siguiente(SALUDO);
+    siguiente(SALUDO.map(function (t) { return { texto: t, paso: 'saludo' }; }));
   }
   var pasoDos = document.querySelector('[data-paso-dos]');
   if (pasoDos && destino === 'crm') pasoDos.textContent = 'Guardamos tus datos solo si nos das permiso.';
@@ -483,6 +559,6 @@
   }
   actualizarCabecera();
 
-  /* para pruebas automáticas */
-  window.__embudo = { respuestas: respuestas, contacto: contacto, prioridad: prioridad, mensaje: mensajeWhatsApp };
+  /* para pruebas automáticas: solo funciones, ningún dato del visitante */
+  window.__embudo = { prioridad: prioridad, mensaje: mensajeWhatsApp };
 })();
