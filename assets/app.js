@@ -356,6 +356,14 @@
   });
   if (!CFG.whatsapp) console.warn('[MML] Falta el número de WhatsApp en assets/config.js. Los botones de WhatsApp llevan al formulario.');
 
+  /* el botón flotante de WhatsApp se esconde mientras el embudo está en pantalla */
+  var seccionEmbudo = $('#hablemos');
+  if (seccionEmbudo && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) {
+      document.body.classList.toggle('en-embudo', es[0].isIntersecting);
+    }, { threshold: 0.15 }).observe(seccionEmbudo);
+  }
+
   /* ---------------------------------------------------------------------
      6 · Testimonios: fachada, sin cargar YouTube hasta el clic
      --------------------------------------------------------------------- */
@@ -388,133 +396,4 @@
     });
   }
 
-  /* ---------------------------------------------------------------------
-     7 · El formulario: escribe directo en el CRM (fn_captar_prospecto)
-     Contrato: 07-crm/02-codigo/crm-mml/sql/12-captacion.sql
-     --------------------------------------------------------------------- */
-  var form = $('#lead-form'), msg = $('#form-msg'), submit = $('#f-submit');
-  var destino = CFG.destinoFormulario === 'crm' ? 'crm' : 'whatsapp';
-  var campoConsentimiento = $('#f-ok') ? $('#f-ok').closest('.field-check') : null;
-  var configurado = destino === 'crm'
-    ? !!(CFG.supabaseUrl && CFG.supabaseAnonKey)
-    : !!CFG.whatsapp;
-
-  if (form && destino === 'whatsapp') {
-    // El visitante manda su propio mensaje: no guardamos nada, así que no
-    // pedimos consentimiento de tratamiento de datos.
-    if (campoConsentimiento) campoConsentimiento.hidden = true;
-    if ($('#f-ok')) $('#f-ok').required = false;
-    submit.textContent = 'Enviar por WhatsApp';
-    var nota = document.createElement('p');
-    nota.className = 'hint hint-wa';
-    nota.textContent = 'Al enviar se abre tu WhatsApp con el mensaje ya escrito. Tú decides si lo mandas.';
-    submit.parentNode.insertBefore(nota, submit);
-  }
-
-  if (form && !configurado) {
-    form.classList.add('desactivado');
-    submit.disabled = true;
-    msg.textContent = destino === 'whatsapp'
-      ? 'Estamos activando el número de WhatsApp. Vuelve en un rato.'
-      : 'Formulario en preparación. Por ahora escríbenos por WhatsApp.';
-    msg.className = 'form-msg';
-    console.warn(destino === 'whatsapp'
-      ? '[MML] Falta el número en assets/config.js (whatsapp): el formulario no puede enviar.'
-      : '[MML] Faltan supabaseUrl y supabaseAnonKey en assets/config.js: el formulario no puede escribir en el CRM.');
-  }
-
-  function normalizarTelefono(v) {
-    var s = String(v || '').replace(/[\s().-]/g, '');
-    if (/^\+\d{8,15}$/.test(s)) return s;
-    if (/^00\d{6,15}$/.test(s)) return '+' + s.slice(2);
-    if (/^9\d{8}$/.test(s)) return '+51' + s;
-    if (/^0\d{8}$/.test(s)) return '+51' + s.slice(1);
-    if (/^51\d{9}$/.test(s)) return '+' + s;
-    return null;
-  }
-
-  /* p_origen solo admite: meta_ads | organico | referido | base_historica | live.
-     'landing' NO es válido y haría que el CRM rechace el 100% de los leads. */
-  function origenDesdeUTM(params) {
-    var src = (params.get('utm_source') || '').toLowerCase();
-    if (/meta|fb|facebook|ig|instagram/.test(src)) return 'meta_ads';
-    if (/referido|ref/.test(src)) return 'referido';
-    return 'organico';
-  }
-
-  if (form && configurado) {
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      msg.className = 'form-msg';
-
-      var trampa = $('#f-web').value;
-      var nombre = $('#f-nombre').value.trim();
-      var telRaw = $('#f-tel').value;
-      var ok = destino === 'whatsapp' ? true : $('#f-ok').checked;
-
-      if (trampa) { msg.textContent = 'Listo. Te escribimos hoy mismo.'; msg.className = 'form-msg ok'; return; }
-      if (!nombre) { msg.textContent = 'Escribe tu nombre, por favor.'; msg.className = 'form-msg err'; $('#f-nombre').focus(); return; }
-      var tel = normalizarTelefono(telRaw);
-      if (!tel) { msg.textContent = 'Revisa el número. Un celular de Perú son 9 dígitos y empieza en 9.'; msg.className = 'form-msg err'; $('#f-tel').focus(); return; }
-      if (!ok) { msg.textContent = 'Necesitamos tu permiso para escribirte.'; msg.className = 'form-msg err'; $('#f-ok').focus(); return; }
-
-      /* Camino de hoy: el propio visitante manda su mensaje por WhatsApp.
-         No se guarda ningún dato personal de este lado. */
-      if (destino === 'whatsapp') {
-        var texto = 'Hola, soy ' + nombre + '. Mi número es ' + tel + '. Quiero información de Mercado Media Luna.';
-        window.open('https://wa.me/' + CFG.whatsapp + '?text=' + encodeURIComponent(texto), '_blank', 'noopener');
-        msg.textContent = 'Listo. Te abrimos WhatsApp con tu mensaje. Dale enviar y te respondemos.';
-        msg.className = 'form-msg ok';
-        form.reset();
-        return;
-      }
-
-      var params = new URLSearchParams(location.search);
-      var carga = {
-        utm_source: params.get('utm_source') || null,
-        utm_medium: params.get('utm_medium') || null,
-        utm_campaign: params.get('utm_campaign') || null,
-        utm_content: params.get('utm_content') || null,
-        seccion: 'hablemos',
-        pagina: location.pathname,
-        user_agent: navigator.userAgent
-      };
-
-      submit.disabled = true;
-      var textoBoton = submit.textContent;
-      submit.textContent = 'Enviando…';
-
-      fetch(CFG.supabaseUrl.replace(/\/$/, '') + '/rest/v1/rpc/fn_captar_prospecto', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': CFG.supabaseAnonKey,
-          'Authorization': 'Bearer ' + CFG.supabaseAnonKey
-        },
-        body: JSON.stringify({
-          p_nombre_completo: nombre,
-          p_telefono_e164: tel,
-          p_origen: origenDesdeUTM(params),
-          p_consentimiento: true,
-          p_carga: carga,
-          p_fuente_sistema: 'landing'
-        })
-      }).then(function (r) { return r.json().catch(function () { return null; }); })
-        .then(function (data) {
-          if (data && data.ok) {
-            location.href = 'gracias.html';
-            return;
-          }
-          console.warn('[MML] El CRM rechazó el lead. Motivo:', data && data.motivo);
-          msg.textContent = 'No pudimos enviarlo. Escríbenos por WhatsApp y te atendemos igual.';
-          msg.className = 'form-msg err';
-        })
-        .catch(function (err) {
-          console.warn('[MML] Error de red al enviar el lead:', err);
-          msg.textContent = 'No pudimos enviarlo. Escríbenos por WhatsApp y te atendemos igual.';
-          msg.className = 'form-msg err';
-        })
-        .then(function () { submit.disabled = false; submit.textContent = textoBoton; });
-    });
-  }
 })();

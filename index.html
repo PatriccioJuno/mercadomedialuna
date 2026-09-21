@@ -265,34 +265,34 @@
     </div>
   </section>
 
-  <!-- ============ FORMULARIO ============ -->
+  <!-- ============ EMBUDO DE CALIFICACIÓN ============ -->
   <section class="hablemos" id="hablemos" aria-labelledby="h-hablemos">
     <div class="hablemos-inner">
       <div class="hablemos-copy reveal">
         <p class="kicker">Hablemos</p>
-        <h2 id="h-hablemos">Déjame tu número y te escribo hoy.</h2>
-        <p>Sin compromiso. Te explico qué se compra exactamente y en qué etapa está la obra.</p>
+        <h2 id="h-hablemos">Unas preguntas rápidas y te escribimos.</h2>
+        <p>Se responden con un toque. Así la primera conversación va directo a lo que te importa.</p>
+        <ol class="hablemos-pasos">
+          <li>Respondes aquí, en menos de un minuto.</li>
+          <li data-paso-dos>Se abre tu WhatsApp con el resumen ya escrito.</li>
+          <li>Te responde una persona del equipo.</li>
+        </ol>
       </div>
 
-      <form class="form reveal" id="lead-form" novalidate>
-        <div class="field">
-          <label for="f-nombre">¿Cómo te llamas?</label>
-          <input id="f-nombre" name="nombre" type="text" autocomplete="name" required placeholder="Nombre y apellido">
+      <div class="chat reveal" id="chat" aria-labelledby="chat-titulo">
+        <div class="chat-head">
+          <span class="chat-avatar" aria-hidden="true"><svg viewBox="-118 -118 236 236"><g transform="rotate(-45)"><path d="M 50.176 -86.5 A 100 100 0 1 0 50.176 86.5 A 88 88 0 1 1 50.176 -86.5 Z" fill="currentColor"></path></g></svg></span>
+          <div class="chat-id">
+            <p class="chat-titulo" id="chat-titulo">Mercado Media Luna</p>
+            <p class="chat-paso">Preguntas rápidas</p>
+          </div>
+          <button type="button" class="chat-atras" hidden>Atrás</button>
         </div>
-        <div class="field">
-          <label for="f-tel">¿A qué número te escribo?</label>
-          <input id="f-tel" name="telefono" type="tel" inputmode="tel" autocomplete="tel" required placeholder="999 999 999">
-          <p class="hint">Celular de Perú. Si estás fuera, ponlo con el código de tu país.</p>
-        </div>
-        <div class="field field-check">
-          <input id="f-ok" name="consentimiento" type="checkbox" required>
-          <label for="f-ok">Autorizo que SCP Inmobiliaria use mis datos para contactarme sobre Mercado Media Luna. <a href="privacidad.html">Aviso de privacidad</a>.</label>
-        </div>
-        <div class="trampa" aria-hidden="true"><label for="f-web">No llenar</label><input id="f-web" name="web" type="text" tabindex="-1" autocomplete="off"></div>
-        <button class="btn btn-accent btn-big" type="submit" id="f-submit">Quiero que me escriban</button>
-        <p class="form-msg" id="form-msg" role="status" aria-live="polite"></p>
-        <p class="form-alt">¿Prefieres escribir tú? <a data-wa href="#hablemos">Escríbeme por WhatsApp</a></p>
-      </form>
+        <div class="chat-barra" aria-hidden="true"><i></i></div>
+        <div class="chat-log" role="log" aria-live="polite" aria-label="Conversación"></div>
+        <div class="chat-zona"></div>
+        <noscript><p class="chat-noscript">Para responder aquí necesitas JavaScript. <a href="https://wa.me/51992755150">Escríbenos por WhatsApp</a>.</p></noscript>
+      </div>
     </div>
   </section>
 </main>
@@ -326,6 +326,7 @@
 
 <script src="assets/config.js"></script>
 <script src="assets/app.js"></script>
+<script src="assets/embudo.js"></script>
 
 <script type="application/ld+json">
 {
