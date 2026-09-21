@@ -33,6 +33,11 @@ window.MML = {
   whatsapp: '51992755150',
   whatsappTexto: 'Hola, vi la web de Mercado Media Luna y quiero información.',
 
+  /* ---- 2b · Medición: Píxel de Meta ----------------------------------------
+     Solo se carga si el visitante acepta el aviso de cookies (assets/medicion.js).
+     Vacío = sin píxel y sin aviso. Nunca se envían nombre, teléfono ni respuestas. */
+  metaPixelId: '28950555004562397',
+
   /* ---- 3 · Redes ---------------------------------------------------------- */
   redes: {
     youtube: 'https://www.youtube.com/@MercadoMediaLuna',

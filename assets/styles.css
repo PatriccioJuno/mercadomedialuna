@@ -636,3 +636,30 @@ body.pausado *,body.pausado *::before,body.pausado *::after{ animation-play-stat
 body.en-embudo .wa-float{ opacity:0; visibility:hidden; pointer-events:none; transform:translateY(12px);
   transition:opacity .3s var(--ease), transform .35s var(--ease), visibility 0s linear .3s }
 .chat-zona:focus{ outline:none }
+
+/* =========================================================================
+   AVISO DE COOKIES (Píxel de Meta)
+   Dos botones idénticos: aceptar y rechazar pesan lo mismo.
+   ========================================================================= */
+.aviso-cookies{
+  position:fixed; z-index:50; left:16px; bottom:16px; max-width:460px;
+  background:var(--panel); color:var(--text-primary); border:1px solid var(--rule-strong); border-radius:6px;
+  box-shadow:0 18px 50px rgba(4,12,22,.6); padding:16px 18px;
+  animation:aviso-entra .4s var(--ease) both;
+}
+.aviso-cookies[hidden]{ display:none }
+.aviso-texto{ margin:0 0 12px; font-size:14px; line-height:1.5; color:var(--text-secondary) }
+.aviso-texto a{ color:var(--text-primary); text-decoration:underline }
+.aviso-botones{ display:grid; grid-template-columns:1fr 1fr; gap:10px }
+.aviso-btn{
+  background:transparent; color:var(--text-primary); border:2px solid var(--text-primary); border-radius:2px;
+  padding:10px 14px; min-height:44px; font:700 15px/1 var(--display); cursor:pointer;
+  transition:background .25s var(--ease), color .25s var(--ease);
+}
+.aviso-btn:hover{ background:var(--text-primary); color:var(--ink) }
+@keyframes aviso-entra{ from{ opacity:0; transform:translateY(12px) } to{ opacity:1; transform:none } }
+@media (max-width:560px){
+  .aviso-cookies{ left:8px; right:8px; bottom:8px; max-width:none }
+  body.con-aviso .wa-float{ bottom:calc(var(--aviso-alto, 180px) + 16px) }
+}
+@media (prefers-reduced-motion:reduce){ .aviso-cookies{ animation:none } }

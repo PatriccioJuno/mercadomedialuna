@@ -350,6 +350,7 @@
       return;
     }
     var texto = (CFG.whatsappTexto || '') + ' (' + seccionDe(a) + ')';
+    a.addEventListener('click', function () { if (window.MMLmedir) window.MMLmedir.contacto('whatsapp_' + seccionDe(a)); });
     a.setAttribute('href', 'https://wa.me/' + CFG.whatsapp + '?text=' + encodeURIComponent(texto));
     a.setAttribute('rel', 'noopener');
     a.setAttribute('target', '_blank');
