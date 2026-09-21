@@ -1,0 +1,6 @@
+.vercel
+
+# Google Drive
+desktop.ini
+**/desktop.ini
+.tmp.drive*

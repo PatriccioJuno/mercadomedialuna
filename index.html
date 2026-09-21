@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es-PE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mercado Media Luna · Un puesto propio en Jicamarca</title>
+<meta name="description" content="Tu puesto propio en Jicamarca, Sector Media Luna. Mercado en construcción: te mostramos la obra como está y te decimos lo que falta. Escríbenos y ven a verla.">
+<meta name="author" content="SCP Inmobiliaria">
+<meta name="theme-color" content="#0F2A44">
+<meta name="robots" content="index, follow">
+<!-- DEPLOY STEP: reemplazar https://mercadomedialuna.com/ por la URL real en canonical, og:url y og:image antes de comprimir y publicar -->
+<link rel="canonical" href="https://mercadomedialuna.com/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_PE">
+<meta property="og:site_name" content="Mercado Media Luna">
+<meta property="og:title" content="Un puesto propio en un mercado que puedes ver construirse">
+<meta property="og:description" content="Mercado Media Luna, en Jicamarca, Sector Media Luna. En construcción. Ven a ver la obra como está.">
+<meta property="og:url" content="https://mercadomedialuna.com/">
+<meta property="og:image" content="https://mercadomedialuna.com/assets/hero-ending.jpg">
+<meta property="og:image:width" content="1728">
+<meta property="og:image:height" content="972">
+<meta property="og:image:alt" content="Proyección arquitectónica del Mercado Media Luna en Jicamarca">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-118 -118 236 236'%3E%3Crect x='-118' y='-118' width='236' height='236' fill='%230F2A44'/%3E%3Cg transform='rotate(-45)'%3E%3Cpath d='M 50.176 -86.5 A 100 100 0 1 0 50.176 86.5 A 88 88 0 1 1 50.176 -86.5 Z' fill='%23F2A93B'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400;75..125,500;75..125,700;75..125,900&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Ir al contenido</a>
+
+<nav class="nav" aria-label="Principal">
+  <a class="brand" href="#inicio" aria-label="Mercado Media Luna, inicio">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="-130 -130 260 260" class="moon">
+        <circle class="moon-arc" cx="0" cy="0" r="118" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" pathLength="100"></circle>
+        <g transform="rotate(-45)"><path d="M 50.176 -86.5 A 100 100 0 1 0 50.176 86.5 A 88 88 0 1 1 50.176 -86.5 Z" fill="currentColor"></path></g>
+      </svg>
+    </span>
+    <span class="brand-words">
+      <span class="brand-kicker">Mercado</span>
+      <span class="brand-name">Media Luna</span>
+      <span class="brand-place">Jicamarca</span>
+    </span>
+  </a>
+  <a class="btn btn-ghost nav-cta" href="#hablemos">Quiero ver la obra</a>
+</nav>
+
+<main id="main" tabindex="-1">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="inicio" aria-label="Mercado Media Luna en construcción">
+    <div class="hero-track">
+      <div class="stage">
+        <div class="poster" aria-hidden="true"></div>
+        <video id="hero-video" preload="none" muted playsinline aria-hidden="true" tabindex="-1"></video>
+        <div class="scrim" aria-hidden="true"></div>
+        <div class="dust" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+        <p class="proyeccion" role="note">Proyección arquitectónica — obra en construcción</p>
+
+        <div class="bands" id="bands">
+          <div class="band band-1" data-band="0,0.17" data-entrance="ensamble">
+            <p class="line" data-text="Aquí no había nada."></p>
+          </div>
+          <div class="band band-2" data-band="0.21,0.40" data-entrance="sube" data-ramp="0.03">
+            <p class="line" data-text="Hoy hay obra."></p>
+            <p class="line line-sub" data-text="Y por eso puedes venir a verla."></p>
+          </div>
+          <div class="band band-3" data-band="0.44,0.62" data-entrance="golpe">
+            <p class="line" data-text="Un puesto propio no es un alquiler."></p>
+          </div>
+          <div class="band band-4" data-band="0.66,0.83" data-entrance="nitido">
+            <p class="line" data-text="Así está proyectado el mercado."></p>
+          </div>
+          <div class="band band-5 band-settle" data-band="0.86,1" data-entrance="asiento">
+            <p class="line line-title" data-text="Mercado Media Luna"></p>
+            <p class="settle-sub">Jicamarca, Sector Media Luna.</p>
+            <div class="settle-cta">
+              <a class="btn btn-accent" href="#hablemos">Quiero ver la obra</a>
+              <a class="btn btn-quiet" data-wa href="#hablemos">Escríbeme por WhatsApp</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="loader" id="loader" aria-hidden="true">
+          <svg class="ring" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="126" style="stroke-dashoffset:var(--ld,126)"></circle></svg>
+        </div>
+        <p class="cue" aria-hidden="true"><span>Baja</span></p>
+      </div>
+    </div>
+
+    <div class="hero-static" aria-label="Mercado Media Luna">
+      <h1 class="static-title">Un puesto propio en un mercado que puedes ver construirse con tus propios ojos.</h1>
+      <p class="static-sub">Jicamarca, Sector Media Luna. En construcción.</p>
+      <div class="settle-cta">
+        <a class="btn btn-accent" href="#hablemos">Quiero ver la obra</a>
+        <a class="btn btn-quiet" data-wa href="#hablemos">Escríbeme por WhatsApp</a>
+      </div>
+      <p class="proyeccion proyeccion-static">Proyección arquitectónica — obra en construcción</p>
+    </div>
+  </section>
+
+  <!-- ============ LA PROMESA ============ -->
+  <section class="promesa reveal" id="promesa" aria-labelledby="h-promesa">
+    <p class="kicker">La promesa</p>
+    <h2 id="h-promesa" class="promesa-title">Un puesto propio en un mercado que puedes ver construirse con tus propios ojos.</h2>
+    <p class="promesa-sub">No te pido que creas. Te pido que vengas a ver.</p>
+    <svg class="rule-draw" viewBox="0 0 600 2" aria-hidden="true"><line x1="0" y1="1" x2="600" y2="1" pathLength="100"></line></svg>
+  </section>
+
+  <!-- ============ EL ALQUILER (momento interactivo) ============ -->
+  <section class="alquiler" id="alquiler" aria-labelledby="h-alquiler">
+    <div class="alquiler-copy reveal">
+      <p class="kicker">El alquiler que nunca termina</p>
+      <h2 id="h-alquiler">Agarra la calculadora.</h2>
+      <p>Cada mes pagas por trabajar en un sitio que no es tuyo. Ese dinero ya salió y no vuelve.</p>
+      <p class="small">Los números son tuyos. Nosotros no ponemos ninguno.</p>
+    </div>
+
+    <form class="calc reveal" id="calc" aria-labelledby="h-calc">
+      <h3 id="h-calc" class="calc-title">Haz la cuenta</h3>
+      <div class="field">
+        <label for="calc-monto">¿Cuánto pagas de alquiler al mes?</label>
+        <div class="money"><span aria-hidden="true">S/</span>
+          <input id="calc-monto" name="monto" type="number" inputmode="numeric" min="0" step="10" placeholder="0" autocomplete="off">
+        </div>
+      </div>
+      <div class="field">
+        <label for="calc-anios">¿Cuántos años llevas pagándolo?</label>
+        <input id="calc-anios" name="anios" type="range" min="1" max="30" step="1" value="8">
+        <output class="calc-anios-out" for="calc-anios" id="calc-anios-out">8 años</output>
+      </div>
+      <p class="calc-result" id="calc-result" role="status" aria-live="polite">Pon tu alquiler y te digo cuánto llevas pagado.</p>
+      <p class="calc-kicker" id="calc-kicker" hidden>¿Qué tienes de eso?</p>
+    </form>
+  </section>
+
+  <!-- ============ QUÉ SE VENDE ============ -->
+  <section class="vende" id="que-se-vende" aria-labelledby="h-vende">
+    <div class="vende-head reveal">
+      <p class="kicker">Qué se vende</p>
+      <h2 id="h-vende">Puestos y tiendas en el mercado que se está construyendo.</h2>
+    </div>
+    <div class="cards">
+      <article class="card reveal">
+        <h3>Puestos interiores</h3>
+        <p>Dentro de la nave, por sector.</p>
+        <dl class="specs">
+          <div><dt>Área</dt><dd class="pend">[PENDIENTE: ver 00-fuente-de-verdad/inventario-maestro.md]</dd></div>
+          <div><dt>Cantidad</dt><dd class="pend">[PENDIENTE: ver 00-fuente-de-verdad/inventario-maestro.md]</dd></div>
+          <div><dt>Precio</dt><dd class="pend">[PENDIENTE: ver 00-fuente-de-verdad/precios-vigentes.md]</dd></div>
+        </dl>
+      </article>
+      <article class="card reveal">
+        <h3>Tiendas sobre avenida</h3>
+        <p>Con frente a la calle.</p>
+        <dl class="specs">
+          <div><dt>Área</dt><dd class="pend">[PENDIENTE: ver 00-fuente-de-verdad/inventario-maestro.md]</dd></div>
+          <div><dt>Cantidad</dt><dd class="pend">[PENDIENTE: ver 00-fuente-de-verdad/inventario-maestro.md]</dd></div>
+          <div><dt>Precio</dt><dd class="pend">[PENDIENTE: ver 00-fuente-de-verdad/precios-vigentes.md]</dd></div>
+        </dl>
+      </article>
+    </div>
+    <figure class="vende-img reveal">
+      <img src="assets/obra-calle.jpg" alt="Proyección arquitectónica de las tiendas del Mercado Media Luna vistas desde la calle" width="1728" height="972" loading="lazy" decoding="async">
+      <figcaption class="proyeccion">Proyección arquitectónica — obra en construcción</figcaption>
+    </figure>
+    <p class="nota reveal">El plano y las imágenes son referenciales. El plano vigente con la distribución exacta: <span class="pend">[PENDIENTE: ver 00-fuente-de-verdad/inventario-maestro.md]</span></p>
+  </section>
+
+  <!-- ============ QUÉ ESTÁS COMPRANDO ============ -->
+  <section class="legal-explica" id="que-compras" aria-labelledby="h-legal">
+    <div class="legal-inner reveal">
+      <p class="kicker">Qué estás comprando exactamente</p>
+      <h2 id="h-legal">Te lo explicamos antes de que pagues, no después.</h2>
+      <p class="lead">Lo que se compra son acciones y derechos sobre el inmueble matriz. En palabras simples: todavía no es una propiedad independizada con su propia partida.</p>
+      <p>SCP Inmobiliaria gestiona la notaría y la inscripción en Registros Públicos.</p>
+      <p class="pend">[PENDIENTE: revisión legal de esta redacción antes de publicar]</p>
+    </div>
+  </section>
+
+  <!-- ============ CÓMO SE COMPRA ============ -->
+  <section class="pasos" id="como-se-compra" aria-labelledby="h-pasos">
+    <p class="kicker reveal">Cómo se compra</p>
+    <h2 id="h-pasos" class="reveal">Tres pasos, sin vueltas.</h2>
+    <ol class="pasos-list">
+      <li class="paso reveal">
+        <span class="paso-n" aria-hidden="true">1</span>
+        <h3>Me escribes</h3>
+        <p>Te hago cuatro preguntas para saber si esto te sirve.</p>
+      </li>
+      <li class="paso reveal">
+        <span class="paso-n" aria-hidden="true">2</span>
+        <h3>Ves la obra</h3>
+        <p>Presencial, o completa por videollamada si estás lejos.</p>
+      </li>
+      <li class="paso reveal">
+        <span class="paso-n" aria-hidden="true">3</span>
+        <h3>Reservas y firmas</h3>
+        <p>Todo queda por escrito.</p>
+        <p class="pend">[PENDIENTE: monto y plazo de separación, ver 00-fuente-de-verdad]</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ============ LA OBRA CON FECHA ============ -->
+  <section class="obra" id="obra" aria-labelledby="h-obra">
+    <div class="obra-head reveal">
+      <p class="kicker">La obra, con fecha</p>
+      <h2 id="h-obra">Te la mostramos como está.</h2>
+      <p>Fotos fechadas, sin maquillar. Cuando la veas en persona, va a ser igual.</p>
+    </div>
+    <div class="obra-grid">
+      <figure class="obra-slot reveal"><div class="slot" aria-hidden="true"></div><figcaption class="pend">[PENDIENTE: foto de obra fechada + autorización escrita de Walter, Acta 03-O02 §6]</figcaption></figure>
+      <figure class="obra-slot reveal"><div class="slot" aria-hidden="true"></div><figcaption class="pend">[PENDIENTE: foto de obra fechada]</figcaption></figure>
+      <figure class="obra-slot reveal"><div class="slot" aria-hidden="true"></div><figcaption class="pend">[PENDIENTE: foto de obra fechada]</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- ============ QUIÉNES CONSTRUYEN ============ -->
+  <section class="quienes" id="quienes" aria-labelledby="h-quienes">
+    <div class="quienes-foto reveal"><div class="slot slot-retrato" aria-hidden="true"></div><p class="pend">[PENDIENTE: foto de Walter en obra]</p></div>
+    <div class="quienes-copy reveal">
+      <p class="kicker">Quiénes lo construyen</p>
+      <h2 id="h-quienes">SCP Inmobiliaria.</h2>
+      <p>Aquí no hay intermediario: hablas con quien está a cargo.</p>
+      <p class="pend">[PENDIENTE: historia y años de SCP confirmados por Walter, ver 00-fuente-de-verdad/ficha-proyecto-mml.md]</p>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIOS ============ -->
+  <section class="testimonios" id="testimonios" aria-labelledby="h-testi">
+    <div class="testi-head reveal">
+      <p class="kicker">Los que ya compraron</p>
+      <h2 id="h-testi">Pregúntales a ellos, no a nosotros.</h2>
+    </div>
+    <div class="testi-rail" id="testi-rail" role="list"></div>
+    <p class="testi-vacio pend reveal">[PENDIENTE: videos de compradores con autorización de imagen firmada para la web]</p>
+    <p class="testi-aviso pend reveal" hidden>[PENDIENTE: autorización de imagen firmada por el comprador que aparece en el video]</p>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="faq" id="preguntas" aria-labelledby="h-faq">
+    <p class="kicker reveal">Preguntas frecuentes</p>
+    <h2 id="h-faq" class="reveal">Lo que todos preguntan.</h2>
+    <div class="faq-list">
+      <details class="reveal"><summary>¿Esto es real, o me van a ver la cara?</summary>
+        <div class="faq-body"><p>La obra existe y la puedes visitar. Ven, tráete a tu familia, y compara lo que ves con lo que te decimos.</p></div></details>
+      <details class="reveal"><summary>¿Y si no lo terminan?</summary>
+        <div class="faq-body"><p class="pend">[PENDIENTE: respuesta aprobada por Walter, no se inventa ninguna garantía]</p></div></details>
+      <details class="reveal"><summary>¿Qué papel me dan?</summary>
+        <div class="faq-body"><p>Lo que se compra son acciones y derechos sobre el inmueble matriz. No es una propiedad independizada. SCP gestiona la notaría y la inscripción en Registros Públicos.</p><p class="pend">[PENDIENTE: revisión legal de esta redacción]</p></div></details>
+      <details class="reveal"><summary>¿Cuánto cuesta?</summary>
+        <div class="faq-body"><p class="pend">[PENDIENTE: ver 00-fuente-de-verdad/precios-vigentes.md, precio autorizado para publicación, con su equivalente en soles]</p></div></details>
+      <details class="reveal"><summary>¿Cuánto renta un puesto?</summary>
+        <div class="faq-body"><p>No te vamos a dar un número de rentabilidad. Cualquiera que te dé un porcentaje de un mercado que todavía no abre se lo está inventando.</p></div></details>
+      <details class="reveal"><summary>¿Puedo visitar la obra?</summary>
+        <div class="faq-body"><p>Sí. Coordinamos el día y te acompañamos.</p><p class="pend">[PENDIENTE: dirección exacta, horario de visitas y pin de Google Maps]</p></div></details>
+      <details class="reveal"><summary>Vivo fuera de Lima, ¿cómo lo veo?</summary>
+        <div class="faq-body"><p>Hacemos un recorrido por videollamada, completo y sin cortes, el día que puedas.</p></div></details>
+      <details class="reveal"><summary>¿Dónde queda exactamente?</summary>
+        <div class="faq-body"><p>En Jicamarca, Sector Media Luna.</p><p class="pend">[PENDIENTE: referencia vial validada y pin de Google Maps]</p></div></details>
+    </div>
+  </section>
+
+  <!-- ============ FORMULARIO ============ -->
+  <section class="hablemos" id="hablemos" aria-labelledby="h-hablemos">
+    <div class="hablemos-inner">
+      <div class="hablemos-copy reveal">
+        <p class="kicker">Hablemos</p>
+        <h2 id="h-hablemos">Déjame tu número y te escribo hoy.</h2>
+        <p>Sin compromiso. Te explico qué se compra exactamente y en qué etapa está la obra.</p>
+      </div>
+
+      <form class="form reveal" id="lead-form" novalidate>
+        <div class="field">
+          <label for="f-nombre">¿Cómo te llamas?</label>
+          <input id="f-nombre" name="nombre" type="text" autocomplete="name" required placeholder="Nombre y apellido">
+        </div>
+        <div class="field">
+          <label for="f-tel">¿A qué número te escribo?</label>
+          <input id="f-tel" name="telefono" type="tel" inputmode="tel" autocomplete="tel" required placeholder="999 999 999">
+          <p class="hint">Celular de Perú. Si estás fuera, ponlo con el código de tu país.</p>
+        </div>
+        <div class="field field-check">
+          <input id="f-ok" name="consentimiento" type="checkbox" required>
+          <label for="f-ok">Autorizo que SCP Inmobiliaria use mis datos para contactarme sobre Mercado Media Luna. <a href="privacidad.html">Aviso de privacidad</a>.</label>
+        </div>
+        <div class="trampa" aria-hidden="true"><label for="f-web">No llenar</label><input id="f-web" name="web" type="text" tabindex="-1" autocomplete="off"></div>
+        <button class="btn btn-accent btn-big" type="submit" id="f-submit">Quiero que me escriban</button>
+        <p class="form-msg" id="form-msg" role="status" aria-live="polite"></p>
+        <p class="form-alt">¿Prefieres escribir tú? <a data-wa href="#hablemos">Escríbeme por WhatsApp</a></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="pie">
+  <div class="pie-top">
+    <span class="brand-mark pie-mark" aria-hidden="true">
+      <svg viewBox="-118 -118 236 236"><g transform="rotate(-45)"><path d="M 50.176 -86.5 A 100 100 0 1 0 50.176 86.5 A 88 88 0 1 1 50.176 -86.5 Z" fill="currentColor"></path></g></svg>
+    </span>
+    <p class="pie-lema">Mercado Media Luna · Jicamarca, Sector Media Luna</p>
+  </div>
+  <p class="proyeccion proyeccion-pie">Proyección arquitectónica — obra en construcción</p>
+  <p class="pie-nota">Las imágenes del mercado terminado son una proyección arquitectónica del proyecto, no una fotografía de la obra. Los planos e imágenes son referenciales.</p>
+  <ul class="pie-redes">
+    <li><a href="https://www.youtube.com/@MercadoMediaLuna" rel="noopener me" target="_blank">YouTube</a></li>
+    <li><a href="https://www.instagram.com/mercadomedialuna/" rel="noopener me" target="_blank">Instagram</a></li>
+    <li><a href="https://www.tiktok.com/@mercadomedialuna" rel="noopener me" target="_blank">TikTok</a></li>
+    <li><a href="https://www.facebook.com/profile.php?id=61573313321939" rel="noopener me" target="_blank">Facebook</a></li>
+  </ul>
+  <ul class="pie-links">
+    <li><a href="privacidad.html">Aviso de privacidad</a></li>
+    <li><a href="terminos.html">Términos de uso</a></li>
+    <li><span class="pend">[PENDIENTE: Libro de Reclamaciones Virtual, razón social y RUC de SCP Inmobiliaria]</span></li>
+  </ul>
+  <p class="pie-legal">SCP Inmobiliaria. <span class="pend">[PENDIENTE: razón social, RUC y domicilio fiscal]</span></p>
+</footer>
+
+<a class="wa-float" data-wa href="#hablemos" aria-label="Escríbeme por WhatsApp">
+  <svg viewBox="0 0 24 24" aria-hidden="true" width="26" height="26"><path fill="currentColor" d="M12.04 2c-5.46 0-9.9 4.44-9.9 9.9 0 1.75.46 3.45 1.32 4.95L2 22l5.3-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.44 9.9-9.9 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m0 1.67c2.2 0 4.27.86 5.83 2.42a8.2 8.2 0 0 1 2.4 5.82c0 4.54-3.7 8.23-8.24 8.23-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.17 8.17 0 0 1-1.26-4.37c0-4.54 3.7-8.24 8.26-8.24m-4.6 4.2c-.2 0-.52.08-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.87 1.22 3.07c.15.2 2.1 3.2 5.08 4.37 2.48.98 2.98.78 3.52.73.54-.05 1.74-.71 1.98-1.4.25-.68.25-1.27.17-1.4-.07-.12-.27-.2-.57-.35-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.48-1.75-1.65-2.05-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.66-1.62-.9-2.21-.24-.58-.48-.5-.66-.51h-.57z"/></svg>
+</a>
+
+<script src="assets/config.js"></script>
+<script src="assets/app.js"></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://mercadomedialuna.com/#scp",
+      "name": "SCP Inmobiliaria",
+      "url": "https://mercadomedialuna.com/",
+      "sameAs": [
+        "https://www.youtube.com/@MercadoMediaLuna",
+        "https://www.instagram.com/mercadomedialuna/",
+        "https://www.tiktok.com/@mercadomedialuna",
+        "https://www.facebook.com/profile.php?id=61573313321939"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://mercadomedialuna.com/#web",
+      "url": "https://mercadomedialuna.com/",
+      "name": "Mercado Media Luna",
+      "inLanguage": "es-PE",
+      "publisher": { "@id": "https://mercadomedialuna.com/#scp" }
+    },
+    {
+      "@type": "Place",
+      "@id": "https://mercadomedialuna.com/#lugar",
+      "name": "Mercado Media Luna",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Jicamarca",
+        "addressRegion": "Lima",
+        "addressCountry": "PE"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://mercadomedialuna.com/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Esto es real, o me van a ver la cara?",
+          "acceptedAnswer": { "@type": "Answer", "text": "La obra existe y la puedes visitar. Ven, tráete a tu familia, y compara lo que ves con lo que te decimos." }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Qué papel me dan?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Lo que se compra son acciones y derechos sobre el inmueble matriz. No es una propiedad independizada. SCP gestiona la notaría y la inscripción en Registros Públicos." }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Cuánto renta un puesto?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No damos números de rentabilidad. Cualquiera que dé un porcentaje de un mercado que todavía no abre se lo está inventando." }
+        },
+        {
+          "@type": "Question",
+          "name": "Vivo fuera de Lima, ¿cómo lo veo?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Hacemos un recorrido por videollamada, completo y sin cortes, el día que puedas." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</body>
+</html>
