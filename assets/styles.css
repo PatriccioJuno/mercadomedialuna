@@ -22,7 +22,7 @@
   --ease-soft:cubic-bezier(.4,0,.2,1);
   --tshadow:0 1px 2px rgba(5,10,18,.95),0 3px 12px rgba(5,10,18,.78),0 10px 44px rgba(5,10,18,.8);
 
-  --gutter:16px;
+  --gutter:22px;          /* el texto nunca toca el borde del celular */
   --maxw:1120px;
   --display:"Archivo","Archivo Black",system-ui,sans-serif;
 }
@@ -93,17 +93,21 @@ a{ color:var(--text-primary) }
 .btn{
   --btn-bg:transparent;
   display:inline-flex; align-items:center; justify-content:center; gap:.5em;
-  padding:14px 22px; border-radius:2px; text-decoration:none;
+  padding:14px 24px; border-radius:999px; text-decoration:none;
   font-weight:700; font-size:16px; letter-spacing:.01em; font-variation-settings:"wdth" 104;
   background:var(--btn-bg); border:2px solid transparent; cursor:pointer;
-  transition:background .35s var(--ease), color .35s var(--ease), border-color .35s var(--ease), transform .35s var(--ease);
+  transition:background .35s var(--ease), color .35s var(--ease), border-color .35s var(--ease), transform .35s var(--ease), box-shadow .35s var(--ease);
 }
 .btn-accent{ --btn-bg:var(--accent); color:var(--ink); border-color:var(--accent) }
 .btn-accent:hover{ --btn-bg:var(--accent-hover); border-color:var(--accent-hover); transform:translateY(-2px) }
 .btn-quiet{ color:var(--text-primary); border-color:var(--rule-strong) }
 .btn-quiet:hover{ border-color:var(--text-primary); transform:translateY(-2px) }
-.btn-ghost{ color:var(--text-primary); border-color:var(--accent); padding:10px 16px; font-size:14px }
-.btn-ghost:hover{ background:var(--accent); color:var(--ink) }
+/* el botón del encabezado va lleno de ámbar: es el que tiene que resaltar */
+.btn-ghost{
+  --btn-bg:var(--accent); color:var(--ink); border-color:var(--accent);
+  padding:11px 20px; font-size:14px; box-shadow:0 6px 20px rgba(242,169,59,.28);
+}
+.btn-ghost:hover{ --btn-bg:var(--accent-hover); border-color:var(--accent-hover); transform:translateY(-2px); box-shadow:0 10px 26px rgba(242,169,59,.4) }
 .btn-big{ width:100%; padding:18px 24px; font-size:17px }
 @media (pointer:coarse){
   .btn{ min-height:44px; display:inline-flex; align-items:center; justify-content:center }
@@ -150,10 +154,20 @@ a{ color:var(--text-primary) }
 .stage.video-ready #hero-video{ opacity:1 }
 .stage.video-failed #hero-video{ display:none }
 
-/* 1 · scrim base: ningún fotograma queda crudo detrás del texto */
+/* 1 · scrim base: ningún fotograma queda crudo detrás del texto.
+   La franja izquierda es el lugar fijo del texto: cae a oscuro parejo y se
+   desvanece antes del mercado, para que el texto y la obra dejen de pelearse.
+   Al ser constante, el peor fotograma del video queda cubierto igual que el
+   mejor: no hay un cuadro en el que el texto pierda contraste. */
 .scrim{
   position:absolute; inset:0; pointer-events:none;
-  background:radial-gradient(ellipse 120% 90% at 50% 45%, rgba(8,20,34,0) 32%, rgba(8,20,34,.66) 100%);
+  background:
+    linear-gradient(96deg,
+      rgba(6,16,28,.90) 0%,
+      rgba(6,16,28,.72) 20%,
+      rgba(6,16,28,.34) 37%,
+      rgba(6,16,28,0) 54%),
+    radial-gradient(ellipse 120% 90% at 50% 45%, rgba(8,20,34,0) 32%, rgba(8,20,34,.66) 100%);
 }
 
 /* polvo en suspensión, a nivel susurro */
@@ -194,11 +208,12 @@ a{ color:var(--text-primary) }
   opacity:0; pointer-events:none; text-shadow:var(--tshadow);
   max-width:min(560px,66vw);
 }
-/* 2 · scrim por banda: oscurece solo mientras esa banda está encendida */
+/* 2 · un refuerzo suave detrás de cada banda. Va muy abierto a propósito:
+   el rectángulo gris que se veía antes era este scrim con el borde duro. */
 .band::before{
-  content:""; position:absolute; inset:-14% -10%; pointer-events:none; z-index:-1;
-  opacity:calc(.25 + .75 * var(--k,1));
-  background:radial-gradient(ellipse 78% 68% at 40% 50%, rgba(5,12,22,.72) 0%, rgba(5,12,22,.5) 46%, rgba(5,12,22,0) 76%);
+  content:""; position:absolute; inset:-40% -34%; pointer-events:none; z-index:-1;
+  opacity:calc(.3 + .7 * var(--k,1));
+  background:radial-gradient(ellipse 62% 54% at 38% 50%, rgba(5,12,22,.5) 0%, rgba(5,12,22,.26) 44%, rgba(5,12,22,0) 74%);
 }
 .band .btn{ text-shadow:none }
 .band .line{
@@ -207,6 +222,18 @@ a{ color:var(--text-primary) }
 }
 .band .line-sub{ font-size:clamp(20px,3vw,32px); font-variation-settings:"wdth" 108; color:var(--text-primary) }
 .band-5{ top:auto; bottom:16%; max-width:min(720px,84vw) }
+
+/* En pantalla ancha el texto se queda en la franja izquierda y el encuadre
+   del video se abre hacia la derecha, anclado al borde izquierdo: el mercado
+   se corre a su lado y el texto deja de caerle encima. */
+@media (min-width:1100px){
+  .band{ max-width:min(440px,34vw) }
+  .band-5{ max-width:min(620px,48vw) }
+  .poster,#hero-video{ width:114% }
+}
+@media (min-width:1500px){
+  .poster,#hero-video{ width:120% }
+}
 .band-5 .line-title{ font-size:clamp(36px,7vw,84px); letter-spacing:-.03em }
 .settle-sub{ font-size:clamp(16px,2vw,21px); color:var(--text-primary); margin:.2em 0 1.1em }
 .settle-cta{ display:flex; flex-wrap:wrap; gap:12px; pointer-events:auto }
@@ -409,16 +436,18 @@ input[type=range]{ width:100%; accent-color:var(--accent); height:32px }
     var(--panel);
 }
 .obra-slot figcaption{ margin-top:10px }
-.slot.slot-retrato{ aspect-ratio:3/4 }
 
 /* ---------- quiénes ---------- */
 .quienes{ display:grid; gap:clamp(20px,4vw,48px); align-items:center }
 @media (min-width:860px){ .quienes{ grid-template-columns:minmax(0,320px) 1fr } }
 .quienes-foto{ margin:0 }
 .quienes-foto p{ margin-top:10px }
-img.slot-retrato{
+/* La proporción y el recorte van fijados aquí: aunque una hoja vieja quede
+   en caché y le imponga otra caja, la foto se recorta, nunca se deforma. */
+.retrato-obra{
   display:block; width:100%; max-width:320px; height:auto; margin-inline:auto;
-  border-radius:4px; border:1px solid var(--rule); box-shadow:0 24px 60px rgba(4,12,22,.4);
+  aspect-ratio:640/1140; object-fit:cover; object-position:center;
+  border-radius:10px; border:1px solid var(--rule); box-shadow:0 24px 60px rgba(4,12,22,.4);
 }
 
 /* ---------- testimonios ---------- */
@@ -507,16 +536,19 @@ img.slot-retrato{
 .pie-links{ list-style:none; display:flex; flex-wrap:wrap; gap:16px; padding:0; margin:0 auto 18px; font-size:14px }
 .pie-links a{ color:var(--text-primary) }
 
-/* ---------- WhatsApp flotante ---------- */
+/* ---------- WhatsApp flotante ----------
+   Verde y glifo oficiales de WhatsApp: es la marca que la gente reconoce
+   de un vistazo. El ámbar se reserva para los botones de la casa. */
 .wa-float{
   position:fixed; right:16px; bottom:16px; z-index:45;
-  width:52px; height:52px; border-radius:50%; display:grid; place-items:center;
-  background:var(--panel); color:var(--accent); border:2px solid var(--accent);
-  box-shadow:0 10px 30px rgba(4,12,22,.5); text-decoration:none;
-  transition:transform .35s var(--ease), background .35s var(--ease), color .35s var(--ease);
+  width:58px; height:58px; border-radius:50%; display:grid; place-items:center;
+  background:#25D366; color:#FFFFFF; border:0;
+  box-shadow:0 8px 24px rgba(4,12,22,.5), 0 0 0 4px rgba(37,211,102,.18); text-decoration:none;
+  transition:transform .35s var(--ease), background .35s var(--ease), box-shadow .35s var(--ease);
 }
-.wa-float:hover{ transform:translateY(-3px); background:var(--accent); color:var(--ink) }
-@media (max-width:420px){ .wa-float{ width:48px; height:48px } }
+.wa-float:hover{ transform:translateY(-3px); background:#1EBE5A; box-shadow:0 12px 30px rgba(4,12,22,.55), 0 0 0 6px rgba(37,211,102,.24) }
+.wa-float svg{ width:32px; height:32px }
+@media (max-width:420px){ .wa-float{ width:54px; height:54px } .wa-float svg{ width:30px; height:30px } }
 
 /* =========================================================================
    MOVIMIENTO REDUCIDO — se honra completo y en los dos sentidos
@@ -668,3 +700,173 @@ body.en-embudo .wa-float{ opacity:0; visibility:hidden; pointer-events:none; tra
   body.con-aviso .wa-float{ bottom:calc(var(--aviso-alto, 180px) + 16px) }
 }
 @media (prefers-reduced-motion:reduce){ .aviso-cookies{ animation:none } }
+
+/* =========================================================================
+   PÁGINA DEL EVENTO (evento.html)
+   Una sola cosa que hacer en toda la página: registrarse. Cada sección
+   termina apuntando al mismo sitio.
+   ========================================================================= */
+.ev-hero,.ev-agenda,.ev-valor{
+  padding:clamp(64px,10vh,120px) var(--gutter);
+  margin:0 auto; max-width:var(--maxw);
+}
+.ev-hero{
+  max-width:none; padding-top:clamp(104px,14vh,152px); padding-bottom:clamp(48px,7vh,80px);
+  background:
+    linear-gradient(to bottom, rgba(11,32,56,.7) 0%, rgba(11,32,56,.88) 58%, var(--canvas) 100%),
+    url("hero-ending.jpg") center/cover no-repeat;
+}
+.ev-hero-inner{ max-width:var(--maxw); margin-inline:auto; display:grid; gap:clamp(26px,4vw,40px) }
+.ev-hero h1{
+  font-size:clamp(29px,4.6vw,52px); max-width:18ch; text-shadow:var(--tshadow); margin-bottom:.4em;
+}
+.ev-lead{
+  font-size:clamp(17px,1.8vw,21px); color:var(--text-primary); max-width:50ch;
+  text-shadow:0 1px 2px rgba(5,10,18,.8); margin:0;
+}
+/* en pantalla ancha entran de una sola vez el titular, el video y el botón */
+@media (min-width:1040px){
+  .ev-hero-inner{
+    grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);
+    column-gap:clamp(36px,4vw,56px); align-items:start;
+  }
+  .ev-hero-copy{ grid-column:1; grid-row:1 }
+  .ev-hero-accion{ grid-column:1; grid-row:2; align-self:end }
+  .ev-hero-video{ grid-column:2; grid-row:1 / span 2; align-self:center }
+}
+
+/* ---------- cuenta regresiva ---------- */
+.cuenta{
+  background:rgba(11,32,56,.72); border:1px solid var(--rule-strong); border-left:3px solid var(--accent);
+  border-radius:10px; padding:18px 20px; margin:0 0 28px; max-width:520px;
+  backdrop-filter:blur(4px);
+}
+.cuenta-rotulo{ margin:0 0 12px; font-size:15px; color:var(--text-secondary) }
+.cuenta-rotulo strong{ color:var(--accent); font-weight:700 }
+.cuenta-bloques{ display:flex; gap:10px; flex-wrap:wrap }
+.cuenta-b{
+  flex:1 1 68px; min-width:62px; text-align:center;
+  background:var(--canvas-deep); border:1px solid var(--rule); border-radius:8px; padding:10px 6px;
+}
+.cuenta-n{
+  display:block; font-size:clamp(24px,3.4vw,34px); font-weight:900; font-variation-settings:"wdth" 112;
+  font-variant-numeric:tabular-nums; line-height:1; color:var(--text-primary);
+}
+.cuenta-t{
+  display:block; margin-top:5px; font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--text-secondary); font-weight:700; font-variation-settings:"wdth" 88;
+}
+.cuenta-ahora{ border-left-color:var(--accent-hover) }
+.cuenta-ahora .cuenta-n{ color:var(--accent) }
+
+.ev-cta{ margin:0 }
+.ev-cta-centro{ text-align:center; margin-top:36px }
+.btn-grande{ padding:18px 34px; font-size:clamp(16px,1.7vw,19px) }
+.ev-cta-nota{ margin:12px 0 0; font-size:14px; color:var(--text-secondary); max-width:46ch }
+.ev-cta-centro .ev-cta-nota{ margin-inline:auto }
+
+/* ---------- el video ---------- */
+.ev-player{ margin:0 }
+.ev-player-pie{
+  margin:14px 0 0; font-size:14px; color:var(--text-secondary); max-width:56ch;
+  text-shadow:0 1px 2px rgba(5,10,18,.7);
+}
+.ev-play,.ev-iframe,.ev-player-vacio{
+  display:block; width:100%; aspect-ratio:16/9; border-radius:10px; overflow:hidden;
+  border:1px solid var(--rule);
+}
+.ev-play{
+  position:relative; padding:0; cursor:pointer;
+  background:var(--panel) center/cover no-repeat;
+  box-shadow:0 30px 70px rgba(4,12,22,.5);
+}
+.ev-play::after{
+  content:""; position:absolute; inset:0; background:linear-gradient(to top, rgba(6,16,28,.72), rgba(6,16,28,.12) 55%);
+}
+.ev-play-icono{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:2;
+  width:84px; height:84px; border-radius:50%; background:var(--accent);
+  box-shadow:0 12px 34px rgba(4,12,22,.55); transition:transform .3s var(--ease), background .3s var(--ease);
+}
+.ev-play-icono::before{
+  content:""; position:absolute; left:calc(50% + 4px); top:50%; transform:translate(-50%,-50%);
+  border-left:26px solid var(--ink); border-top:16px solid transparent; border-bottom:16px solid transparent;
+}
+.ev-play-texto{
+  position:absolute; left:0; right:0; bottom:18px; z-index:2; text-align:center;
+  color:var(--text-primary); font-weight:700; font-size:16px; letter-spacing:.02em;
+}
+.ev-play:hover .ev-play-icono{ transform:translate(-50%,-50%) scale(1.06); background:var(--accent-hover) }
+.ev-iframe{ border:0 }
+.ev-player-vacio{
+  display:grid; place-items:center; padding:24px; text-align:center;
+  border:1px dashed var(--rule-strong);
+  background:
+    repeating-linear-gradient(135deg, rgba(246,242,234,.05) 0 10px, transparent 10px 20px),
+    var(--panel);
+}
+
+/* ---------- agenda ---------- */
+.agenda-list{ list-style:none; margin:32px 0 0; padding:0; counter-reset:ag; display:grid; gap:2px }
+.agenda-item{
+  counter-increment:ag; position:relative; padding:22px 0 22px 62px; border-top:1px solid var(--rule);
+}
+.agenda-item:last-child{ border-bottom:1px solid var(--rule) }
+.agenda-item::before{
+  content:counter(ag); position:absolute; left:0; top:22px;
+  width:40px; height:40px; border-radius:50%; display:grid; place-items:center;
+  border:2px solid var(--accent); color:var(--accent);
+  font-weight:900; font-size:17px; font-variant-numeric:tabular-nums;
+}
+.agenda-item h3{ margin-bottom:.25em }
+.agenda-item p{ color:var(--text-secondary); font-size:16px; margin:0; max-width:62ch }
+.ev-img{ margin:36px 0 0; position:relative; border-radius:10px; overflow:hidden }
+.ev-img img{ width:100%; height:auto }
+.ev-img .proyeccion{ position:absolute }
+
+/* ---------- por qué vale ---------- */
+.ev-valor{ max-width:none; background:var(--panel-2) }
+.ev-valor-head,.valor-grid,.ev-valor .nota{ max-width:var(--maxw); margin-inline:auto }
+.valor-grid{ display:grid; gap:16px; margin:32px 0 24px }
+@media (min-width:760px){ .valor-grid{ grid-template-columns:1fr 1fr; gap:20px } }
+.valor-card{
+  background:var(--panel); border:1px solid var(--rule); border-radius:10px;
+  padding:clamp(20px,2.6vw,28px); border-top:3px solid var(--accent);
+}
+.valor-card h3{ margin-bottom:.3em }
+.valor-card p{ color:var(--text-secondary); font-size:16px; margin:0 }
+
+/* ---------- testimonios escritos ---------- */
+.escritos-head,.escritos,.escritos-vacio{ max-width:var(--maxw); margin-inline:auto }
+.escritos-head{ margin-top:48px; padding-top:28px; border-top:1px solid var(--rule) }
+.escritos-head h3{ margin:0 }
+.escritos{ display:grid; gap:16px; margin-top:22px }
+@media (min-width:760px){ .escritos{ grid-template-columns:1fr 1fr; gap:20px } }
+.escritos:empty{ display:none }
+.escrito{
+  margin:0; background:var(--panel); border:1px solid var(--rule); border-left:3px solid var(--accent);
+  border-radius:8px; padding:20px 22px;
+}
+.escrito blockquote{ margin:0 0 12px; font-size:17px; line-height:1.5 }
+.escrito blockquote::before{ content:"\201C" }
+.escrito blockquote::after{ content:"\201D" }
+.escrito figcaption{ font-size:13px; color:var(--text-secondary); letter-spacing:.02em }
+.escritos-vacio{ display:block; margin-top:22px; width:fit-content }
+
+/* ---------- el paso del documento ---------- */
+.chat-campo-doble{ grid-template-columns:1fr 1fr auto }
+@media (max-width:420px){
+  .chat-campo-doble{ grid-template-columns:1fr auto }
+  .chat-campo-doble input:first-of-type{ grid-column:1 / -1 }
+}
+.chat-saltar{
+  display:block; margin:10px 0 0; padding:8px 0; background:none; border:0;
+  color:var(--text-secondary); font:700 14px var(--display); cursor:pointer;
+  text-decoration:underline; text-underline-offset:3px; min-height:44px;
+}
+.chat-saltar:hover{ color:var(--text-primary) }
+
+/* la página del evento no lleva hero con scroll: el pie del embudo manda */
+.pagina-evento .hablemos{ scroll-margin-top:72px }
+.pagina-evento .hablemos-copy .small{ margin-top:20px }
+.pagina-evento .hablemos-copy .small a{ color:var(--accent) }

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es-PE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evento de los miércoles · Mercado Media Luna</title>
+<meta name="description" content="Todos los miércoles, 7:30 p.m.: te explicamos el Mercado Media Luna de Jicamarca completo. Qué se vende, qué se compra exactamente y cómo se compra. Regístrate y te confirmamos por WhatsApp.">
+<meta name="author" content="SCP Inmobiliaria">
+<meta name="theme-color" content="#0F2A44">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://mercadomedialuna.com/evento">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_PE">
+<meta property="og:site_name" content="Mercado Media Luna">
+<meta property="og:title" content="Todos los miércoles te explicamos el mercado completo">
+<meta property="og:description" content="Evento informativo de Mercado Media Luna, Jicamarca. Miércoles 7:30 p.m. Regístrate en un minuto.">
+<meta property="og:url" content="https://mercadomedialuna.com/evento">
+<meta property="og:image" content="https://mercadomedialuna.com/assets/hero-ending.jpg">
+<meta property="og:image:width" content="1728">
+<meta property="og:image:height" content="972">
+<meta property="og:image:alt" content="Proyección arquitectónica del Mercado Media Luna en Jicamarca">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-118 -118 236 236'%3E%3Crect x='-118' y='-118' width='236' height='236' fill='%230F2A44'/%3E%3Cg transform='rotate(-45)'%3E%3Cpath d='M 50.176 -86.5 A 100 100 0 1 0 50.176 86.5 A 88 88 0 1 1 50.176 -86.5 Z' fill='%23F2A93B'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400;75..125,500;75..125,700;75..125,900&display=swap">
+<link rel="stylesheet" href="assets/styles.css?v=3">
+<noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
+</head>
+<body class="pagina-evento">
+<a class="skip" href="#main">Ir al contenido</a>
+
+<nav class="nav" aria-label="Principal">
+  <a class="brand" href="index.html" aria-label="Mercado Media Luna, inicio">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="-118 -118 236 236"><g transform="rotate(-45)"><path d="M 50.176 -86.5 A 100 100 0 1 0 50.176 86.5 A 88 88 0 1 1 50.176 -86.5 Z" fill="currentColor"></path></g></svg>
+    </span>
+    <span class="brand-words">
+      <span class="brand-kicker">Mercado</span>
+      <span class="brand-name">Media Luna</span>
+      <span class="brand-place">Jicamarca</span>
+    </span>
+  </a>
+  <a class="btn btn-ghost nav-cta" href="#registro">Quiero mi lugar</a>
+</nav>
+
+<main id="main" tabindex="-1">
+
+  <!-- ============ HERO DEL EVENTO ============
+       Una sola pantalla: qué es, cuándo es, el video y el botón. -->
+  <header class="ev-hero" aria-labelledby="h-ev">
+    <div class="ev-hero-inner">
+
+      <div class="ev-hero-copy">
+        <p class="kicker">Evento informativo · Entrada libre</p>
+        <h1 id="h-ev">Todos los miércoles, 7:30 de la noche, te explicamos el mercado completo.</h1>
+        <p class="ev-lead">Te mostramos la obra como está, te explicamos qué se compra exactamente y respondemos lo que preguntes. No tienes que comprar nada para entrar.</p>
+      </div>
+
+      <div class="ev-hero-video">
+        <div class="ev-player" id="ev-player"></div>
+        <p class="ev-player-pie">Aquí está la información base: dónde queda, qué se vende, cómo se compra y qué papel recibes. El miércoles resolvemos lo que te quede.</p>
+      </div>
+
+      <div class="ev-hero-accion">
+        <div class="cuenta" id="cuenta" role="group" aria-labelledby="cuenta-rotulo">
+          <p class="cuenta-rotulo" id="cuenta-rotulo">El próximo es el <strong id="cuenta-fecha">miércoles</strong>, 7:30 p.m. (hora de Perú)</p>
+          <div class="cuenta-bloques" id="cuenta-bloques" aria-hidden="true">
+            <div class="cuenta-b"><span class="cuenta-n" data-cuenta="d">0</span><span class="cuenta-t">días</span></div>
+            <div class="cuenta-b"><span class="cuenta-n" data-cuenta="h">0</span><span class="cuenta-t">horas</span></div>
+            <div class="cuenta-b"><span class="cuenta-n" data-cuenta="m">0</span><span class="cuenta-t">min</span></div>
+            <div class="cuenta-b"><span class="cuenta-n" data-cuenta="s">0</span><span class="cuenta-t">seg</span></div>
+          </div>
+          <!-- el resumen para lector de pantalla se escribe en silencio: una
+               región viva que cambia cada segundo sería insoportable -->
+          <p class="sr" id="cuenta-voz"></p>
+        </div>
+
+        <div class="ev-cta">
+          <a class="btn btn-accent btn-grande" href="#registro">Quiero mi lugar</a>
+          <p class="ev-cta-nota">Cuatro preguntas rápidas. Se abre tu WhatsApp con el registro ya escrito.</p>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ============ QUÉ PASA EL MIÉRCOLES ============ -->
+  <section class="ev-agenda" id="agenda" aria-labelledby="h-agenda">
+    <div class="ev-agenda-head reveal">
+      <p class="kicker">Qué pasa el miércoles</p>
+      <h2 id="h-agenda">Esto es lo que vas a ver.</h2>
+    </div>
+    <ol class="agenda-list">
+      <li class="agenda-item reveal">
+        <h3>La obra como está hoy</h3>
+        <p>Sin maquillar. Y si quieres verla con tus propios ojos, coordinamos la visita en persona o por videollamada.</p>
+      </li>
+      <li class="agenda-item reveal">
+        <h3>Qué se compra exactamente</h3>
+        <p>Acciones y derechos sobre el inmueble matriz, y qué significa eso en la práctica antes de que pagues nada. <span class="pend">[PENDIENTE: revisión legal de esta redacción]</span></p>
+      </li>
+      <li class="agenda-item reveal">
+        <h3>Puestos y tiendas, con sus medidas</h3>
+        <p>423 puestos de aproximadamente 9 m² y 62 tiendas, la mayoría entre 20 y 26 m². Las áreas salen del plano vigente, no de un folleto.</p>
+      </li>
+      <li class="agenda-item reveal">
+        <h3>Cómo se compra, paso a paso</h3>
+        <p>Desde la primera conversación hasta la firma. La separación es de S/500, o su equivalente de US$150, y es reembolsable dentro de los 7 días calendario siguientes al depósito.</p>
+      </li>
+      <li class="agenda-item reveal">
+        <h3>Tus preguntas, en vivo</h3>
+        <p>Las incómodas también. Si hay algo que todavía no sabemos, te decimos que no lo sabemos.</p>
+      </li>
+    </ol>
+    <figure class="ev-img reveal">
+      <img src="assets/obra-calle.jpg" alt="Proyección arquitectónica de las tiendas del Mercado Media Luna vistas desde la calle" width="1728" height="972" loading="lazy" decoding="async">
+      <figcaption class="proyeccion">Proyección arquitectónica — obra en construcción</figcaption>
+    </figure>
+  </section>
+
+  <!-- ============ POR QUÉ VALE LA HORA ============ -->
+  <section class="ev-valor" id="valor" aria-labelledby="h-valor">
+    <div class="ev-valor-head reveal">
+      <p class="kicker">Por qué vale tu tiempo</p>
+      <h2 id="h-valor">Hablas con quien construye, no con un vendedor de paso.</h2>
+    </div>
+    <div class="valor-grid">
+      <article class="valor-card reveal">
+        <h3>Sin intermediario</h3>
+        <p>SCP Inmobiliaria construye y vende directo. El que te responde es del equipo, no una cadena de contactos.</p>
+      </article>
+      <article class="valor-card reveal">
+        <h3>La obra se visita</h3>
+        <p>No te pedimos que creas. Te pedimos que vengas a verla. Si estás lejos, la recorremos por videollamada, completa y sin cortes.</p>
+      </article>
+      <article class="valor-card reveal">
+        <h3>485 unidades en plano</h3>
+        <p>423 puestos y 62 tiendas, según la lámina A-1 vigente. El área exacta de cada unidad se confirma contra el plano antes de firmar.</p>
+      </article>
+      <article class="valor-card reveal">
+        <h3>Empresa con nombre y RUC</h3>
+        <p>SOCIEDAD INMOBILIARIA CONSTRUYO PERU S.A.C., RUC 20552782292, inscrita en SUNAT desde 2013. SCP Inmobiliaria es su nombre comercial.</p>
+      </article>
+    </div>
+    <p class="nota reveal">Lo que no vas a escuchar el miércoles: un porcentaje de rentabilidad. El mercado todavía no abre y cualquier número de renta sería inventado.</p>
+  </section>
+
+  <!-- ============ TESTIMONIOS ============ -->
+  <section class="testimonios" id="testimonios" aria-labelledby="h-testi">
+    <div class="testi-head reveal">
+      <p class="kicker">Los que ya compraron</p>
+      <h2 id="h-testi">Pregúntales a ellos, no a nosotros.</h2>
+    </div>
+    <div class="testi-rail" id="testi-rail" role="list"></div>
+    <p class="testi-vacio pend reveal">[PENDIENTE: videos de compradores con autorización de imagen firmada para la web]</p>
+    <p class="testi-aviso pend reveal" hidden>[PENDIENTE: autorización de imagen firmada por el comprador que aparece en el video]</p>
+
+    <div class="escritos-head reveal">
+      <h3 id="h-escritos">Lo que nos escribieron</h3>
+    </div>
+    <div class="escritos" id="escritos" role="list"></div>
+    <p class="escritos-vacio pend reveal">[PENDIENTE: testimonios escritos con la autorización firmada de quien los dice. Se cargan en assets/config.js → evento.testimoniosEscritos]</p>
+  </section>
+
+  <!-- ============ REGISTRO (embudo corto) ============ -->
+  <section class="hablemos" id="registro" aria-labelledby="h-registro">
+    <div class="hablemos-inner">
+      <div class="hablemos-copy reveal">
+        <p class="kicker">Tu lugar del miércoles</p>
+        <h2 id="h-registro">Cuatro toques y tu nombre.</h2>
+        <p>Así sabemos a quién le estamos hablando y la sesión va directo a lo que te importa.</p>
+        <ol class="hablemos-pasos">
+          <li>Respondes aquí, en menos de un minuto.</li>
+          <li>Se abre tu WhatsApp con el registro ya escrito.</li>
+          <li>Te confirmamos el lugar y cómo entrar.</li>
+        </ol>
+        <p class="small">Esta web no guarda tus datos. El mensaje lo mandas tú desde tu propio WhatsApp. <a href="privacidad.html">Aviso de privacidad</a>.</p>
+      </div>
+
+      <div class="chat reveal" id="chat" role="region" aria-labelledby="chat-titulo">
+        <div class="chat-head">
+          <span class="chat-avatar" aria-hidden="true"><svg viewBox="-118 -118 236 236"><g transform="rotate(-45)"><path d="M 50.176 -86.5 A 100 100 0 1 0 50.176 86.5 A 88 88 0 1 1 50.176 -86.5 Z" fill="currentColor"></path></g></svg></span>
+          <div class="chat-id">
+            <p class="chat-titulo" id="chat-titulo">Registro del miércoles</p>
+            <p class="chat-paso">Preguntas rápidas</p>
+          </div>
+          <button type="button" class="chat-atras" hidden>Atrás</button>
+        </div>
+        <div class="chat-barra" aria-hidden="true"><i></i></div>
+        <div class="chat-log" role="log" aria-live="polite" aria-label="Conversación"></div>
+        <div class="chat-zona"></div>
+        <noscript><p class="chat-noscript">Para registrarte aquí necesitas JavaScript. <a href="https://wa.me/51992755150">Escríbenos por WhatsApp</a>.</p></noscript>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PREGUNTAS DEL EVENTO ============ -->
+  <section class="faq" id="preguntas" aria-labelledby="h-faq">
+    <p class="kicker reveal">Antes de registrarte</p>
+    <h2 id="h-faq" class="reveal">Lo que todos preguntan.</h2>
+    <div class="faq-list">
+      <details class="reveal"><summary>¿Tengo que pagar o comprar algo para entrar?</summary>
+        <div class="faq-body"><p>No. Entras, escuchas y preguntas. Si al final decides que esto no es para ti, nos lo dices y ahí queda.</p></div></details>
+      <details class="reveal"><summary>¿Es presencial o por internet?</summary>
+        <div class="faq-body"><p>Te lo confirmamos por WhatsApp apenas te registres, junto con el punto de encuentro o el enlace.</p><p class="pend">[PENDIENTE: modalidad del evento y enlace o dirección, para poder decirlo aquí antes de que se registren]</p></div></details>
+      <details class="reveal"><summary>¿Cuánto cuesta un puesto?</summary>
+        <div class="faq-body"><p class="pend">[PENDIENTE: ver 00-fuente-de-verdad/precios-vigentes.md, precio autorizado para publicación, con su equivalente en soles]</p><p>Lo que sí está confirmado es el monto para separar: S/500, o US$150, reembolsable dentro de los 7 días calendario siguientes al depósito.</p></div></details>
+      <details class="reveal"><summary>No puedo este miércoles.</summary>
+        <div class="faq-body"><p>Ponlo en el registro. Hay sesión todos los miércoles, así que coordinamos la que te quede.</p></div></details>
+      <details class="reveal"><summary>¿Me van a presionar para comprar?</summary>
+        <div class="faq-body"><p>No. Antes de que pagues algo te explicamos por escrito qué estás comprando, y la separación tiene 7 días calendario para arrepentirte.</p></div></details>
+      <details class="reveal"><summary>¿Qué hacen con mis datos?</summary>
+        <div class="faq-body"><p>Esta web no los guarda. El registro arma un mensaje y lo mandas tú desde tu WhatsApp. A partir de ahí conversamos por ahí, como con cualquier contacto. Está todo en el <a href="privacidad.html">aviso de privacidad</a>.</p></div></details>
+      <details class="reveal"><summary>¿Dónde queda el mercado?</summary>
+        <div class="faq-body"><p>En Jicamarca, Sector Media Luna.</p><p class="pend">[PENDIENTE: referencia vial validada y pin de Google Maps]</p></div></details>
+    </div>
+    <div class="ev-cta ev-cta-centro reveal">
+      <a class="btn btn-accent btn-grande" href="#registro">Quiero mi lugar del miércoles</a>
+    </div>
+  </section>
+</main>
+
+<footer class="pie">
+  <div class="pie-top">
+    <span class="brand-mark pie-mark" aria-hidden="true">
+      <svg viewBox="-118 -118 236 236"><g transform="rotate(-45)"><path d="M 50.176 -86.5 A 100 100 0 1 0 50.176 86.5 A 88 88 0 1 1 50.176 -86.5 Z" fill="currentColor"></path></g></svg>
+    </span>
+    <p class="pie-lema">Mercado Media Luna · Jicamarca, Sector Media Luna</p>
+  </div>
+  <p class="proyeccion proyeccion-pie">Proyección arquitectónica — obra en construcción</p>
+  <p class="pie-nota">Las imágenes del mercado terminado son una proyección arquitectónica del proyecto, no una fotografía de la obra. Los planos e imágenes son referenciales.</p>
+  <ul class="pie-redes">
+    <li><a href="https://www.youtube.com/@MercadoMediaLuna" rel="noopener me" target="_blank">YouTube</a></li>
+    <li><a href="https://www.instagram.com/mercadomedialuna/" rel="noopener me" target="_blank">Instagram</a></li>
+    <li><a href="https://www.tiktok.com/@mercadomedialuna" rel="noopener me" target="_blank">TikTok</a></li>
+    <li><a href="https://www.facebook.com/profile.php?id=61573313321939" rel="noopener me" target="_blank">Facebook</a></li>
+  </ul>
+  <ul class="pie-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="privacidad.html">Aviso de privacidad</a></li>
+    <li><a href="terminos.html">Términos de uso</a></li>
+    <li><a href="privacidad.html#cookies" data-preferencias-cookies>Preferencias de cookies</a></li>
+    <li><a href="libro-de-reclamaciones.html">Libro de Reclamaciones</a></li>
+  </ul>
+  <p class="pie-legal">SCP Inmobiliaria es el nombre comercial de SOCIEDAD INMOBILIARIA CONSTRUYO PERU S.A.C. · RUC 20552782292 · Av. Próceres de la Independencia Mza. S17 Lote 47, Urb. Mariscal Cáceres, Lima.</p>
+</footer>
+
+<a class="wa-float" data-wa href="#registro" aria-label="Escríbeme por WhatsApp">
+  <svg viewBox="0 0 24 24" aria-hidden="true" width="32" height="32"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413"/></svg>
+</a>
+
+<script src="assets/config.js?v=3"></script>
+<script src="assets/medicion.js?v=3"></script>
+<script src="assets/evento.js?v=3"></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://mercadomedialuna.com/#scp",
+      "name": "SCP Inmobiliaria",
+      "legalName": "SOCIEDAD INMOBILIARIA CONSTRUYO PERU S.A.C.",
+      "url": "https://mercadomedialuna.com/",
+      "sameAs": [
+        "https://www.youtube.com/@MercadoMediaLuna",
+        "https://www.instagram.com/mercadomedialuna/",
+        "https://www.tiktok.com/@mercadomedialuna",
+        "https://www.facebook.com/profile.php?id=61573313321939"
+      ]
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://mercadomedialuna.com/evento#pagina",
+      "url": "https://mercadomedialuna.com/evento",
+      "name": "Evento de los miércoles · Mercado Media Luna",
+      "inLanguage": "es-PE",
+      "isPartOf": { "@id": "https://mercadomedialuna.com/#web" },
+      "publisher": { "@id": "https://mercadomedialuna.com/#scp" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://mercadomedialuna.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Evento de los miércoles", "item": "https://mercadomedialuna.com/evento" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://mercadomedialuna.com/evento#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Tengo que pagar o comprar algo para entrar al evento?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Entras, escuchas y preguntas. Si al final decides que esto no es para ti, nos lo dices y ahí queda." }
+        },
+        {
+          "@type": "Question",
+          "name": "No puedo este miércoles.",
+          "acceptedAnswer": { "@type": "Answer", "text": "Ponlo en el registro. Hay sesión todos los miércoles, así que coordinamos la que te quede." }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Me van a presionar para comprar?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Antes de que pagues algo te explicamos por escrito qué estás comprando, y la separación tiene 7 días calendario para arrepentirte." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</body>
+</html>

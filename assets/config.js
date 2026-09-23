@@ -68,6 +68,28 @@ window.MML = {
     },
   ],
 
+  /* ---- 4b · La página del evento (evento.html) ----------------------------
+     El evento se repite todos los miércoles, así que aquí no va ninguna
+     fecha: la página calcula sola cuál es el próximo miércoles en hora de
+     Lima. Para cambiar el día o la hora se cambian estas dos líneas. */
+  evento: {
+    diaSemana: 3,              // 0 domingo, 3 miércoles
+    hora: 19, minuto: 30,      // 7:30 p.m., hora de Lima
+    /* El video que estructura la información. Vacío = la página muestra el
+       espacio marcado como pendiente y sigue funcionando y convirtiendo. */
+    youtubeId: '',             // [PENDIENTE: id del video del evento en YouTube]
+    /* 'opcional' → se puede saltar (recomendado arriba del embudo: pedir el
+       documento antes de la primera conversación cuesta registros).
+       'obligatorio' → no se puede saltar.  'no' → ni se pregunta. */
+    pedirDocumento: 'opcional',
+    /* Testimonios escritos. Cada uno necesita la autorización firmada de quien
+       lo dice, igual que los de video. Mientras la lista esté vacía, la
+       sección muestra el pendiente en vez de inventar reseñas. */
+    testimoniosEscritos: [
+      /* { texto: '', nombre: '', rubro: '', fecha: '', autorizacion: '' } */
+    ],
+  },
+
   /* ---- 5 · Video del hero ------------------------------------------------- */
   video: 'assets/hero-scrub.mp4',
   videoLigero: 'assets/hero-scrub-lite.mp4',   // conexiones lentas y ahorro de datos

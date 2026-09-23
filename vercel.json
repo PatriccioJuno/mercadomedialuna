@@ -28,6 +28,12 @@
       ]
     }
   ],
+  "rewrites": [
+    {
+      "source": "/evento",
+      "destination": "/evento.html"
+    }
+  ],
   "redirects": [
     {
       "source": "/(.*)",
