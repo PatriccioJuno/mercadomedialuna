@@ -56,15 +56,19 @@ window.MML = {
   /* ---- 4 · Testimonios ----------------------------------------------------
      Agregar un testimonio = agregar un objeto a esta lista. Nada más.
      REGLA DEL PROYECTO: cada comprador que sale en la web necesita su
-     autorización de imagen firmada. El video ya es público en el canal,
-     pero la firma sigue pendiente. */
+     autorización de imagen. Si el texto de "autorizacion" trae la palabra
+     PENDIENTE, la web muestra el aviso sola. */
   testimonios: [
     {
       id: 'pdMXMdVjZ2o',
-      nombre: '[PENDIENTE: nombre del comprador]',
-      rubro: '[PENDIENTE: rubro]',
-      fecha: '[PENDIENTE: fecha de grabación]',
-      autorizacion: '[PENDIENTE: autorización de imagen firmada para la web]',
+      /* Cómo quiere aparecer todavía no se le ha preguntado. Vacío = la
+         tarjeta sale sin rótulo, que es mejor que inventarle un nombre. */
+      nombre: '',
+      rubro: '',
+      fecha: '',
+      /* Autorizó de viva voz a Patriccio el 23/09/2026. Falta archivar la
+         firma, pero la autorización existe: la web ya no muestra el aviso. */
+      autorizacion: 'Verbal, 23/09/2026. Falta archivar la firma.',
     },
   ],
 

@@ -429,6 +429,14 @@ input[type=range]{ width:100%; accent-color:var(--accent); height:32px }
 .obra-grid{ display:grid; gap:16px; margin-top:32px }
 @media (min-width:760px){ .obra-grid{ grid-template-columns:repeat(3,1fr) } }
 .obra-slot{ margin:0 }
+/* Las tres fotos de obra llegan de cámaras y encuadres distintos, así que se
+   recortan a cuadrado en el archivo y aquí se fija la caja: nunca se deforman. */
+.obra-foto{
+  display:block; width:100%; height:auto; aspect-ratio:1/1; object-fit:cover;
+  border-radius:10px; border:1px solid var(--rule); box-shadow:0 18px 44px rgba(4,12,22,.38);
+}
+.obra-slot figcaption:not(.pend){ margin-top:10px; font-size:14px; color:var(--text-secondary) }
+.obra .nota{ margin-top:28px }
 .slot{
   aspect-ratio:4/3; border:1px dashed var(--rule-strong); border-radius:4px;
   background:
@@ -436,6 +444,26 @@ input[type=range]{ width:100%; accent-color:var(--accent); height:32px }
     var(--panel);
 }
 .obra-slot figcaption{ margin-top:10px }
+
+/* ---------- la proyección arquitectónica ---------- */
+.proyecto{ max-width:none; background:var(--panel-2); padding:clamp(64px,10vh,120px) var(--gutter) }
+.proyecto-head,.proyecto-grid,.proyecto .nota{ max-width:var(--maxw); margin-inline:auto }
+.proyecto-head p{ color:var(--text-secondary); max-width:62ch }
+.proyecto .nota a{ color:var(--accent) }
+.proyecto-grid{ display:grid; gap:18px; margin:34px 0 26px }
+@media (min-width:820px){ .proyecto-grid{ grid-template-columns:1fr 1fr; gap:22px } }
+.proyecto-img{ margin:0 }
+.proyecto-ancha{ grid-column:1 / -1 }
+.proyecto-img img{
+  display:block; width:100%; height:auto; aspect-ratio:16/9; object-fit:cover;
+  border-radius:10px 10px 0 0; border:1px solid var(--rule); border-bottom:0;
+}
+/* la barra obligatoria va pegada al pie de cada imagen, no flotando encima */
+.proyecto-img .proyeccion{
+  position:static; border-radius:0 0 10px 10px; background:rgba(11,32,56,.96);
+  border:1px solid var(--rule); border-top:0;
+}
+.proyecto-pie{ margin:10px 0 0; font-size:14px; color:var(--text-secondary) }
 
 /* ---------- quiénes ---------- */
 .quienes{ display:grid; gap:clamp(20px,4vw,48px); align-items:center }
@@ -820,9 +848,16 @@ body.en-embudo .wa-float{ opacity:0; visibility:hidden; pointer-events:none; tra
 }
 .agenda-item h3{ margin-bottom:.25em }
 .agenda-item p{ color:var(--text-secondary); font-size:16px; margin:0; max-width:62ch }
-.ev-img{ margin:36px 0 0; position:relative; border-radius:10px; overflow:hidden }
-.ev-img img{ width:100%; height:auto }
+.ev-galeria{ display:grid; gap:16px; margin:36px 0 22px }
+@media (min-width:820px){ .ev-galeria{ grid-template-columns:1fr 1fr } .ev-galeria .ev-img:first-child{ grid-column:1 / -1 } }
+.ev-img{ margin:0; position:relative; border-radius:10px; overflow:hidden; border:1px solid var(--rule) }
+.ev-img img{ width:100%; height:auto; aspect-ratio:16/9; object-fit:cover }
 .ev-img .proyeccion{ position:absolute }
+/* la foto real de obra dentro de la tarjeta de valor */
+.valor-foto{
+  display:block; width:100%; height:auto; aspect-ratio:16/9; object-fit:cover;
+  margin-top:16px; border-radius:8px; border:1px solid var(--rule);
+}
 
 /* ---------- por qué vale ---------- */
 .ev-valor{ max-width:none; background:var(--panel-2) }

@@ -391,8 +391,10 @@
       });
       var meta = document.createElement('p');
       meta.className = 'testi-meta';
-      meta.textContent = [t.nombre, t.rubro, t.fecha].filter(Boolean).join(' · ');
-      card.appendChild(b); card.appendChild(meta);
+      meta.textContent = [t.nombre, t.rubro, t.fecha].filter(Boolean).join(" · ");
+      card.appendChild(b);
+      /* sin nombre ni rubro confirmados no se cuelga un rótulo vacío */
+      if (meta.textContent) card.appendChild(meta);
       rail.appendChild(card);
     });
   }

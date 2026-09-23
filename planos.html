@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es-PE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plano y disponibilidad · Mercado Media Luna</title>
+<meta name="description" content="Mira el plano del Mercado Media Luna: 423 puestos y 62 tiendas, con las áreas de cada unidad y los puestos que figuran libres. Plano referencial, disponibilidad sujeta a confirmación.">
+<meta name="theme-color" content="#0F2A44">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://mercadomedialuna.com/planos.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_PE">
+<meta property="og:site_name" content="Mercado Media Luna">
+<meta property="og:title" content="El plano del mercado, con los puestos que siguen libres">
+<meta property="og:description" content="423 puestos y 62 tiendas. Mira el plano completo y las áreas reales de cada unidad.">
+<meta property="og:url" content="https://mercadomedialuna.com/planos.html">
+<meta property="og:image" content="https://mercadomedialuna.com/assets/plano-og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-118 -118 236 236'%3E%3Crect x='-118' y='-118' width='236' height='236' fill='%230F2A44'/%3E%3Cg transform='rotate(-45)'%3E%3Cpath d='M 50.176 -86.5 A 100 100 0 1 0 50.176 86.5 A 88 88 0 1 1 50.176 -86.5 Z' fill='%23F2A93B'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400;75..125,500;75..125,700;75..125,900&display=swap">
+<link rel="stylesheet" href="assets/styles.css?v=3">
+<style>
+.doc{ max-width:980px; margin:0 auto; padding:120px var(--gutter) 80px }
+.doc h1{ font-size:clamp(30px,5vw,46px); margin-bottom:.35em }
+.doc h2{ font-size:clamp(19px,2.2vw,24px); margin-top:2em; margin-bottom:.5em }
+.doc p,.doc li{ color:var(--text-secondary) }
+.volver{ display:inline-block; margin-bottom:28px; color:var(--accent); font-weight:700; font-size:14px }
+.doc-otros{ margin-top:2.5em; padding-top:1.2em; border-top:1px solid var(--rule); font-size:14px }
+.doc-otros a{ color:var(--accent) }
+
+.plano-intro{ font-size:clamp(17px,2vw,19px); color:var(--text-primary); max-width:62ch }
+
+/* ---- visor ---- */
+.visor{
+  position:relative; margin:28px 0 12px; border:1px solid var(--rule-strong); border-radius:6px;
+  background:#fff; overflow:hidden; height:min(72vh,720px); touch-action:none; cursor:grab;
+}
+.visor.arrastrando{ cursor:grabbing }
+.visor img{
+  position:absolute; top:0; left:0; transform-origin:0 0; max-width:none;
+  image-rendering:-webkit-optimize-contrast; user-select:none; -webkit-user-drag:none;
+}
+.visor-cargando{
+  position:absolute; inset:0; display:grid; place-items:center; background:var(--panel);
+  color:var(--text-secondary); font-size:14px;
+}
+.visor-ctrl{
+  position:absolute; right:12px; bottom:12px; display:flex; gap:6px; z-index:2;
+}
+.visor-ctrl button{
+  width:40px; height:40px; border-radius:4px; border:1px solid var(--rule-strong);
+  background:rgba(15,42,68,.92); color:#fff; font-family:var(--display); font-size:19px;
+  font-weight:700; line-height:1; cursor:pointer;
+}
+.visor-ctrl button:hover{ border-color:var(--accent); color:var(--accent) }
+.visor-ayuda{
+  position:absolute; left:12px; top:12px; z-index:2; background:rgba(15,42,68,.92); color:#fff;
+  font-size:12px; padding:6px 10px; border-radius:4px; pointer-events:none;
+}
+.plano-acciones{ display:flex; flex-wrap:wrap; gap:10px; margin:16px 0 8px }
+.visor-nota{ font-size:14px; color:var(--text-secondary); max-width:74ch; margin:12px 0 0 }
+.visor-nota strong{ color:var(--text-primary) }
+
+/* ---- leyenda ---- */
+.leyenda{ display:grid; gap:12px; margin:24px 0 8px }
+@media (min-width:680px){ .leyenda{ grid-template-columns:1fr 1fr } }
+.leyenda div{ background:var(--panel); border-radius:4px; padding:14px 16px }
+.leyenda h3{ margin:0 0 6px; font-size:15px; color:var(--text-primary); display:flex; align-items:center; gap:9px }
+.leyenda p{ margin:0; font-size:14px }
+.swatch{ width:20px; height:20px; border-radius:3px; border:1px solid rgba(0,0,0,.35); flex:none }
+.swatch-libre{ background:#FFE108 }
+.swatch-otro{ background:#FFF583 }
+
+/* ---- tabla de composición ---- */
+.tabla-wrap{ overflow-x:auto; margin:8px 0 }
+table.comp{ width:100%; border-collapse:collapse; font-size:15px; min-width:520px }
+table.comp th,table.comp td{ text-align:left; padding:11px 12px; border-bottom:1px solid var(--rule) }
+table.comp th{ color:var(--accent); font-size:12px; text-transform:uppercase; letter-spacing:.08em; font-variation-settings:"wdth" 88 }
+table.comp td{ color:var(--text-secondary) }
+table.comp td:first-child{ color:var(--text-primary); font-weight:700 }
+
+.aviso{
+  background:var(--panel); border-left:4px solid var(--accent); border-radius:4px;
+  padding:16px 18px; margin:24px 0;
+}
+.aviso p{ margin:0; color:var(--text-primary); font-size:15px }
+.aviso p + p{ margin-top:8px }
+.cta-plano{ display:flex; flex-wrap:wrap; gap:12px; margin-top:28px }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Ir al contenido</a>
+
+<nav class="nav" aria-label="Principal">
+  <a class="brand" href="index.html" aria-label="Mercado Media Luna, inicio">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="-130 -130 260 260" class="moon">
+        <circle class="moon-arc" cx="0" cy="0" r="118" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" pathLength="100"></circle>
+        <g transform="rotate(-45)"><path d="M 50.176 -86.5 A 100 100 0 1 0 50.176 86.5 A 88 88 0 1 1 50.176 -86.5 Z" fill="currentColor"></path></g>
+      </svg>
+    </span>
+    <span class="brand-words">
+      <span class="brand-kicker">Mercado</span>
+      <span class="brand-name">Media Luna</span>
+      <span class="brand-place">Jicamarca</span>
+    </span>
+  </a>
+  <a class="btn btn-ghost nav-cta" href="index.html#hablemos">Quiero ver la obra</a>
+</nav>
+
+<main id="main" class="doc" tabindex="-1">
+  <a class="volver" href="index.html">← Volver al inicio</a>
+
+  <p class="kicker">El plano</p>
+  <h1>Mira dónde quedaría tu puesto.</h1>
+  <p class="plano-intro">Este es el plano de distribución del mercado. Puedes acercarte, moverte por los pasajes
+  y ver cada puesto con su número. Los que están pintados de amarillo son los que figuraban libres
+  en la lista de secretaría del <strong>18 de agosto de 2026</strong>.</p>
+
+  <div class="visor" id="visor">
+    <div class="visor-cargando" id="visor-cargando">Cargando el plano…</div>
+    <img id="plano" src="assets/plano-disponibilidad-zoom.webp" alt="Plano de distribución del Mercado Media Luna con los puestos libres marcados en amarillo" width="3000" height="5875" decoding="async">
+    <p class="visor-ayuda" id="visor-ayuda">Arrastra para moverte · pellizca o usa la rueda para acercar</p>
+    <div class="visor-ctrl">
+      <button type="button" id="mas" aria-label="Acercar">+</button>
+      <button type="button" id="menos" aria-label="Alejar">−</button>
+      <button type="button" id="reset" aria-label="Ver todo el plano" title="Ver todo">⤢</button>
+    </div>
+  </div>
+
+  <p class="visor-nota">Los dos tonos de amarillo del plano no significan lo mismo. El fuerte son los 128 puestos que la lista de secretaría daba por libres el 18 de agosto de 2026. El claro es una segunda marca que todavía estamos aclarando con la administración: <strong>pregúntanos antes de contar con cualquiera de esas unidades.</strong></p>
+
+  <div class="plano-acciones">
+    <a class="btn btn-accent" href="assets/plano-disponibilidad.pdf" download>Descargar el plano en PDF</a>
+    <a class="btn btn-quiet" href="assets/plano-disponibilidad-zoom.webp" target="_blank" rel="noopener">Abrir la imagen en grande</a>
+  </div>
+
+  <h2>Cómo leer el plano</h2>
+  <div class="leyenda">
+    <div>
+      <h3><span class="swatch swatch-libre" aria-hidden="true"></span> Amarillo fuerte</h3>
+      <p>Puestos que figuran como libres en la lista de secretaría del 18 de agosto de 2026. El plano
+      declara <strong>128 puestos libres</strong> a esa fecha.</p>
+    </div>
+    <div>
+      <h3><span class="swatch swatch-otro" aria-hidden="true"></span> Amarillo claro</h3>
+      <p>Una segunda marca de la lista original. Todavía la estamos reconciliando con el registro,
+      así que <strong>consúltanos por cualquiera de esas unidades</strong> antes de contar con ella.</p>
+    </div>
+    <div>
+      <h3>P-1, P-2, P-3…</h3>
+      <p>Los puestos interiores, ordenados por pasaje. El plano numera del P-1 al P-402, y algunos
+      están subdivididos con letra (P-61A, P-131C…).</p>
+    </div>
+    <div>
+      <h3>T-1, T-2, T-3…</h3>
+      <p>Las tiendas, alineadas sobre Av. Perú y Av. 14 de Agosto. Son las que tienen frente a la calle.</p>
+    </div>
+  </div>
+
+  <h2>Lo que hay en el mercado</h2>
+  <div class="tabla-wrap">
+    <table class="comp">
+      <caption class="sr">Composición del Mercado Media Luna según el plano vigente</caption>
+      <thead>
+        <tr><th scope="col">Tipo</th><th scope="col">Cuántos</th><th scope="col">Área típica</th><th scope="col">Rango real</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Puestos interiores</td><td>423</td><td>9.45 m²</td><td>de 6.77 a 19.70 m²</td></tr>
+        <tr><td>Tiendas sobre avenida</td><td>62</td><td>25.06 m²</td><td>de 9.86 a 120.50 m²</td></tr>
+        <tr><td>Total de unidades</td><td>485</td><td>No aplica</td><td>5,580.71 m² de área vendible</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Cada unidad tiene su propia área exacta en el plano, y esa es la que va al contrato. De los
+  puestos, <strong>356 miden entre 9 y 10 m²</strong>: ese es el puesto estándar del mercado.</p>
+
+  <div class="aviso">
+    <p><strong>El plano es referencial.</strong> Corresponde a la lámina A-1 de distribución del
+    proyecto. Las medidas y la ubicación de cada unidad se verifican contra el plano vigente antes
+    de firmar cualquier documento.</p>
+    <p><strong>La disponibilidad cambia.</strong> La marca del plano es del 18 de agosto de 2026 y
+    desde entonces puede haberse vendido o separado alguna unidad. Antes de que separes, te
+    confirmamos por escrito que el puesto que elegiste sigue disponible.</p>
+  </div>
+
+  <h2>¿Viste uno que te gusta?</h2>
+  <p>Dinos el número del puesto y te confirmamos si sigue libre, cuánto mide exactamente y cuánto cuesta.</p>
+  <div class="cta-plano">
+    <a class="btn btn-accent" href="index.html#hablemos">Preguntar por un puesto</a>
+    <a class="btn btn-quiet" data-wa href="index.html#hablemos">Escríbeme por WhatsApp</a>
+  </div>
+
+  <p class="doc-otros">
+    <a href="index.html">Inicio</a> ·
+    <a href="index.html#que-se-vende">Qué se vende</a> ·
+    <a href="index.html#que-compras">Qué estás comprando</a> ·
+    <a href="libro-de-reclamaciones.html">Libro de Reclamaciones</a>
+  </p>
+</main>
+
+<footer class="pie">
+  <div class="pie-top">
+    <span class="brand-mark pie-mark" aria-hidden="true">
+      <svg viewBox="-118 -118 236 236"><g transform="rotate(-45)"><path d="M 50.176 -86.5 A 100 100 0 1 0 50.176 86.5 A 88 88 0 1 1 50.176 -86.5 Z" fill="currentColor"></path></g></svg>
+    </span>
+    <p class="pie-lema">Mercado Media Luna · Jicamarca, Sector Media Luna</p>
+  </div>
+  <p class="pie-nota">Los planos e imágenes son referenciales. La disponibilidad de cada unidad se confirma por escrito antes de la separación.</p>
+  <ul class="pie-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="evento.html">Evento de los miércoles</a></li>
+    <li><a href="privacidad.html">Aviso de privacidad</a></li>
+    <li><a href="terminos.html">Términos de uso</a></li>
+    <li><a href="privacidad.html#cookies" data-preferencias-cookies>Preferencias de cookies</a></li>
+    <li><a href="libro-de-reclamaciones.html">Libro de Reclamaciones</a></li>
+  </ul>
+  <p class="pie-legal">SCP Inmobiliaria es el nombre comercial de SOCIEDAD INMOBILIARIA CONSTRUYO PERU S.A.C. · RUC 20552782292 · Av. Próceres de la Independencia Mza. S17 Lote 47, Urb. Mariscal Cáceres, Lima.</p>
+</footer>
+
+<script src="assets/config.js?v=3"></script>
+<script src="assets/medicion.js?v=3"></script>
+<script>
+/* Visor de plano: arrastrar, rueda, pellizco y doble toque.
+   Sin librerías: la imagen se mueve con transform, que es lo único que el
+   navegador puede animar sin repintar todo. */
+(function(){
+  var caja = document.getElementById('visor');
+  var img  = document.getElementById('plano');
+  var carg = document.getElementById('visor-cargando');
+  var ayuda= document.getElementById('visor-ayuda');
+  if(!caja || !img) return;
+
+  var esc = 1, min = 1, max = 6, x = 0, y = 0, iw = 0, ih = 0;
+
+  function aplicar(){
+    var cw = caja.clientWidth, ch = caja.clientHeight;
+    var w = iw * esc, h = ih * esc;
+    /* si la imagen cabe, se centra; si no, no se deja despegar de los bordes */
+    x = w <= cw ? (cw - w) / 2 : Math.min(0, Math.max(cw - w, x));
+    y = h <= ch ? (ch - h) / 2 : Math.min(0, Math.max(ch - h, y));
+    img.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + esc + ')';
+  }
+
+  function encajar(){
+    iw = img.naturalWidth || 3000; ih = img.naturalHeight || 5875;
+    var cw = caja.clientWidth, ch = caja.clientHeight;
+    /* se puede alejar hasta ver la lámina entera, pero arranca ajustado al
+       ancho: así el plano se ve grande y el visitante solo baja. */
+    min = Math.min(cw / iw, ch / ih);
+    esc = cw / iw; x = 0; y = 0;
+    max = Math.max(min * 12, 2);
+    aplicar();
+  }
+
+  function zoom(f, cx, cy){
+    var n = Math.min(max, Math.max(min, esc * f));
+    if(n === esc) return;
+    var r = caja.getBoundingClientRect();
+    var px = (cx - r.left - x) / esc, py = (cy - r.top - y) / esc;
+    esc = n;
+    x = cx - r.left - px * esc;
+    y = cy - r.top - py * esc;
+    aplicar();
+    if(ayuda) ayuda.style.opacity = '0';
+  }
+
+  if(img.complete && img.naturalWidth){ carg.remove(); encajar(); }
+  else {
+    img.addEventListener('load', function(){ carg.remove(); encajar(); });
+    img.addEventListener('error', function(){ carg.textContent = 'No se pudo cargar el plano. Descárgalo en PDF más abajo.'; });
+  }
+  addEventListener('resize', encajar);
+
+  caja.addEventListener('wheel', function(e){
+    e.preventDefault();
+    zoom(e.deltaY < 0 ? 1.18 : 1/1.18, e.clientX, e.clientY);
+  }, {passive:false});
+
+  var puntos = new Map(), sep0 = 0, esc0 = 1, ax = 0, ay = 0, mueve = false;
+
+  caja.addEventListener('pointerdown', function(e){
+    /* los botones del visor viven dentro de la caja: si capturamos el puntero
+       aquí, el click nunca les llega. */
+    if(e.target.closest('.visor-ctrl')) return;
+    caja.setPointerCapture(e.pointerId);
+    puntos.set(e.pointerId, {x:e.clientX, y:e.clientY});
+    if(puntos.size === 1){ mueve = true; ax = e.clientX - x; ay = e.clientY - y; caja.classList.add('arrastrando'); }
+    if(puntos.size === 2){ mueve = false; var p = [...puntos.values()]; sep0 = Math.hypot(p[0].x-p[1].x, p[0].y-p[1].y); esc0 = esc; }
+  });
+
+  caja.addEventListener('pointermove', function(e){
+    if(!puntos.has(e.pointerId)) return;
+    puntos.set(e.pointerId, {x:e.clientX, y:e.clientY});
+    if(puntos.size === 2){
+      var p = [...puntos.values()];
+      var sep = Math.hypot(p[0].x-p[1].x, p[0].y-p[1].y);
+      if(sep0 > 0){
+        var obj = Math.min(max, Math.max(min, esc0 * (sep / sep0)));
+        zoom(obj / esc, (p[0].x+p[1].x)/2, (p[0].y+p[1].y)/2);
+      }
+    } else if(mueve){
+      x = e.clientX - ax; y = e.clientY - ay; aplicar();
+      if(ayuda) ayuda.style.opacity = '0';
+    }
+  });
+
+  function soltar(e){
+    puntos.delete(e.pointerId);
+    if(puntos.size < 2) sep0 = 0;
+    if(puntos.size === 0){ mueve = false; caja.classList.remove('arrastrando'); }
+  }
+  caja.addEventListener('pointerup', soltar);
+  caja.addEventListener('pointercancel', soltar);
+
+  caja.addEventListener('dblclick', function(e){
+    zoom(esc > min * 2.5 ? min / esc : 2.5, e.clientX, e.clientY);
+  });
+
+  document.getElementById('mas').addEventListener('click', function(){
+    var r = caja.getBoundingClientRect(); zoom(1.5, r.left + r.width/2, r.top + r.height/2);
+  });
+  document.getElementById('menos').addEventListener('click', function(){
+    var r = caja.getBoundingClientRect(); zoom(1/1.5, r.left + r.width/2, r.top + r.height/2);
+  });
+  document.getElementById('reset').addEventListener('click', function(){
+    encajar(); if(ayuda) ayuda.style.opacity = '';
+  });
+})();
+
+/* enlaces de WhatsApp, igual que en el resto del sitio */
+(function(){
+  var c = window.MML || {};
+  if(!c.whatsapp) return;
+  var url = 'https://wa.me/' + c.whatsapp + (c.whatsappTexto ? '?text=' + encodeURIComponent('Hola, vi el plano en la web y quiero preguntar por un puesto.') : '');
+  document.querySelectorAll('[data-wa]').forEach(function(a){ a.href = url; a.target = '_blank'; a.rel = 'noopener'; });
+})();
+</script>
+</body>
+</html>
