@@ -274,6 +274,7 @@
 
   function responder(p, o) {
     if (p.id in respuestas) return;          // doble toque: la primera respuesta manda
+    if (!interactuo && window.MMLmedir) window.MMLmedir.evento('EmbudoInicio');
     interactuo = true;
     anclarFoco();
     respuestas[p.id] = o.v;
@@ -415,6 +416,7 @@
         a.addEventListener('click', function () {
           if (avisado) return;
           avisado = true;
+          if (window.MMLmedir) window.MMLmedir.lead('embudo_whatsapp');
           var miTurno = ++turno;
           setTimeout(function () {
             decir([{ texto: 'Listo. Si se abrió tu WhatsApp, dale enviar y te responde una persona del equipo.', paso: 'envio' }], miTurno);
@@ -478,7 +480,7 @@
       })
     }).then(function (r) { return r.json().catch(function () { return null; }); })
       .then(function (d) {
-        if (d && d.ok) { location.href = 'gracias.html'; return; }
+        if (d && d.ok) { if (window.MMLmedir) window.MMLmedir.lead('embudo_crm'); setTimeout(function () { location.href = 'gracias.html'; }, 300); return; }
         console.warn('[MML] El CRM rechazó el lead. Motivo:', d && d.motivo);
         falloConRespaldo(error, boton);
       })
@@ -494,6 +496,7 @@
       a.href = 'https://wa.me/' + CFG.whatsapp + '?text=' + encodeURIComponent(mensajeWhatsApp());
       a.target = '_blank'; a.rel = 'noopener';
       a.textContent = ' Envíalo por WhatsApp';
+      a.addEventListener('click', function () { if (window.MMLmedir) window.MMLmedir.lead('embudo_respaldo'); });
       error.appendChild(a);
     }
   }
