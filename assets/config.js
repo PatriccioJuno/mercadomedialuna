@@ -35,7 +35,14 @@ window.MML = {
 
   /* ---- 2b · Medición: Píxel de Meta ----------------------------------------
      Solo se carga si el visitante acepta el aviso de cookies (assets/medicion.js).
-     Vacío = sin píxel y sin aviso. Nunca se envían nombre, teléfono ni respuestas. */
+     Vacío = sin píxel y sin aviso. Nunca se envían nombre, teléfono ni respuestas.
+     APAGADO A PROPÓSITO: el aviso de privacidad (privacidad.html) todavía no
+     tiene la identidad del responsable, el correo de derechos ARCO ni el
+     plazo de conservación completos (ver PENDIENTES-WEB.md #1). Sin eso, el
+     consentimiento del aviso de cookies no es "informado" (D.S. 016-2024-JUS
+     art. 6.1). Cuando Dirección ratifique el aviso, cambiar esta línea a
+     true: no hace falta tocar nada más, el aviso y el píxel se activan solos. */
+  avisoPrivacidadListo: false,
   metaPixelId: '28950555004562397',
 
   /* ---- 3 · Redes ---------------------------------------------------------- */

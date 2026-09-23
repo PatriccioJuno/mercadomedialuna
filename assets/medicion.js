@@ -8,7 +8,8 @@
   'use strict';
 
   var CFG = window.MML || {};
-  var PIXEL = CFG.metaPixelId;
+  /* el píxel se apaga solo hasta que el aviso de privacidad esté completo, ver config.js */
+  var PIXEL = CFG.avisoPrivacidadListo === true ? CFG.metaPixelId : '';
   var CLAVE = 'mml-cookies-v1';          // cambiar el sufijo obliga a volver a preguntar
   var cargado = false;
 
@@ -26,6 +27,10 @@
       t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
     }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
     /* eslint-enable */
+    /* apaga la coincidencia automática: sin esto, cada clic en un botón (por
+       ejemplo un chip del embudo) se envía solo a Meta como evento con el
+       texto del botón, que puede ser una respuesta del visitante */
+    window.fbq('set', 'autoConfig', false, PIXEL);
     window.fbq('init', PIXEL);
     window.fbq('track', 'PageView');
   }
@@ -86,12 +91,15 @@
   }
 
   function decidir(v) {
-    var antes = leer();
     guardar(v);
     ocultarAviso();
-    if (v === 'si') cargarPixel();
-    /* si retira el permiso, se recarga para que el píxel deje de correr en esta visita */
-    else if (antes === 'si' && cargado) location.reload();
+    if (v === 'si') { cargarPixel(); return; }
+    /* si retira el permiso habiendo estado ya cargado, se recarga para que el
+       píxel deje de correr en esta visita. No depende de leer la decisión
+       anterior: si localStorage está bloqueado (modo privado), guardar()
+       falla en silencio y "leer" nunca devolvería 'si', dejando el píxel
+       corriendo sin que esto lo notara. */
+    if (cargado) location.reload();
   }
 
   /* enlace del pie para cambiar la decisión cuando quiera */
