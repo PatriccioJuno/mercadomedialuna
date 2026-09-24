@@ -144,7 +144,7 @@ a{ color:var(--text-primary) }
    HERO
    ========================================================================= */
 .hero{ position:relative }
-.hero-track{ height:700vh }          /* 8 s de video: cada beat aguanta 6 flicks de lectura */
+.hero-track{ height:700vh }          /* 10 s de video: cada beat aguanta 6 flicks de lectura */
 .stage{
   position:sticky; top:0; height:100svh; overflow:clip;
   background:var(--canvas-deep);
@@ -207,8 +207,11 @@ a{ color:var(--text-primary) }
 
 /* ---------- bandas de texto ---------- */
 .bands{ position:absolute; inset:0; z-index:5 }
+/* El texto entra un poco más adentro que el margen general (pedido de
+   Patriccio, 24/09/2026): 7% del ancho, sin bajar del margen ni pasar de
+   140 px. Sigue dentro de la franja oscura del scrim, que llega al 37%. */
 .band{
-  position:absolute; left:var(--gutter); right:var(--gutter); top:22%;
+  position:absolute; left:clamp(var(--gutter),7vw,140px); right:var(--gutter); top:22%;
   opacity:0; pointer-events:none; text-shadow:var(--tshadow);
   max-width:min(560px,66vw);
 }
@@ -237,6 +240,45 @@ a{ color:var(--text-primary) }
 }
 @media (min-width:1500px){
   .poster,#hero-video{ width:120% }
+}
+
+/* ---------- hero compacto: celular y cualquier pantalla vertical ----------
+   El mismo scroll que en escritorio, más corto (4.2 pantallas en vez de 7).
+   El video es un recorte cuadrado centrado en el mercado y va arriba; el
+   texto va debajo, sobre fondo liso, así que se lee igual en todos los
+   cuadros y no necesita el scrim. La barra de proyección va pegada al borde
+   inferior del video, que es lo que rotula. */
+@media (orientation:portrait), (max-width:720px){
+  .hero{ --caja:min(100vw, 58svh) }
+  .hero-track{ height:420vh }
+  .poster,#hero-video{ top:0; bottom:auto; left:0; right:auto; width:100%; height:var(--caja) }
+  .scrim{
+    bottom:auto; height:var(--caja);
+    background:linear-gradient(to bottom, rgba(6,16,28,.62) 0%, rgba(6,16,28,0) 24%, rgba(6,16,28,0) 76%, var(--canvas-deep) 100%);
+  }
+  .dust{ bottom:auto; height:var(--caja) }
+  .stage > .proyeccion{ top:var(--caja); bottom:auto; transform:translateY(-100%) }
+  /* cada banda va centrada en la zona de texto, un poco por encima de la
+     mitad: así no queda el texto arriba y un hueco vacío abajo */
+  .band,.band-5{
+    left:var(--gutter); right:var(--gutter); bottom:auto; max-width:none;
+    top:calc(var(--caja) + (100svh - var(--caja)) * .46); transform:translateY(-50%);
+  }
+  .band::before{ display:none }
+  .band .line{ font-size:clamp(28px,8vw,46px); max-width:18ch }
+  .band .line-sub{ font-size:clamp(18px,5vw,27px) }
+  .band-5 .line-title{ font-size:clamp(32px,9vw,56px) }
+  .settle-sub{ margin:.1em 0 .9em }
+  /* "Baja" y el anillo de carga van sobre el video, encima de la barra: en
+     la zona de texto chocaban con los botones del final en pantallas bajas */
+  .cue{ top:calc(var(--caja) - 60px); bottom:auto; text-shadow:0 1px 3px rgba(5,10,18,.9) }
+  .loader{ top:calc(var(--caja) - 84px); bottom:auto }
+}
+/* celular acostado: poca altura, el título final no puede ocupar media pantalla */
+@media (orientation:landscape) and (max-height:560px){
+  .band{ top:16% }
+  .band .line{ font-size:clamp(26px,9svh,44px) }
+  .band-5 .line-title{ font-size:clamp(30px,12svh,56px) }
 }
 .band-5 .line-title{ font-size:clamp(36px,7vw,84px); letter-spacing:-.03em }
 .settle-sub{ font-size:clamp(16px,2vw,21px); color:var(--text-primary); margin:.2em 0 1.1em }
@@ -292,20 +334,18 @@ a{ color:var(--text-primary) }
 .cue span{ display:block; animation:baja 3.4s var(--ease-soft) -1s infinite }
 @keyframes baja{ 0%,100%{ transform:translateY(0); opacity:.7 } 50%{ transform:translateY(6px); opacity:1 } }
 
-/* hero estático (celulares, vertical, movimiento reducido) */
+/* hero estático: solo para quien pidió menos movimiento. Hasta el 24/09/2026
+   también lo veían el celular y las pantallas verticales; ahora tienen el
+   hero compacto. La compuerta es la misma en app.js (GATES). */
 .hero-static{ display:none }
 
-@media (max-width:720px),
-       (orientation:portrait) and (max-width:1024px),
-       (orientation:portrait) and (pointer:coarse),
-       (orientation:landscape) and (pointer:coarse) and (max-height:560px),
-       (prefers-reduced-motion:reduce){
+@media (prefers-reduced-motion:reduce){
   .hero-track{ display:none }
   .hero-static{
     display:block; position:relative; min-height:92svh;
     display:flex; flex-direction:column; justify-content:flex-end;
     padding:120px var(--gutter) 64px;
-    background:linear-gradient(to bottom, rgba(11,32,56,.35) 0%, rgba(11,32,56,.72) 55%, rgba(11,32,56,.95) 100%), url("hero-ending.jpg") center/cover no-repeat;
+    background:linear-gradient(to bottom, rgba(11,32,56,.35) 0%, rgba(11,32,56,.72) 55%, rgba(11,32,56,.95) 100%), url("hero-ending-v2.jpg") center/cover no-repeat;
   }
   .static-title{ font-size:clamp(28px,7.6vw,44px); max-width:18ch; text-shadow:var(--tshadow); margin-bottom:.35em }
   .static-sub{ color:var(--text-primary); text-shadow:var(--tshadow); margin-bottom:1.4em }
@@ -446,8 +486,9 @@ input[type=range]{ width:100%; accent-color:var(--accent); height:32px }
   display:block; margin-bottom:4px; color:var(--accent);
   font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
 }
-.valor-foto-pie{ margin:8px 0 0; font-size:13px; color:var(--text-secondary) }
-.valor-foto-pie .obra-fecha{ font-weight:700; color:var(--text-primary) }
+/* va con .valor-card delante: si no, .valor-card p (más específica) lo deja en 16px y sin margen */
+.valor-card .valor-foto-pie{ margin:8px 0 0; font-size:13px; color:var(--text-secondary) }
+.valor-card .valor-foto-pie .obra-fecha{ font-weight:700; color:var(--text-primary); white-space:nowrap }
 .obra .nota{ margin-top:28px }
 .slot{
   aspect-ratio:4/3; border:1px dashed var(--rule-strong); border-radius:4px;
@@ -499,6 +540,7 @@ input[type=range]{ width:100%; accent-color:var(--accent); height:32px }
 .walter-play{
   position:relative; display:block; width:100%; max-width:320px; margin-inline:auto;
   padding:0; border:0; background:none; border-radius:10px; cursor:pointer; color:inherit;
+  font:inherit;  /* un <button> no hereda la fuente: sin esto el rótulo salía en Arial */
 }
 .walter-play .retrato-obra{ aspect-ratio:9/16 }
 .walter-play::after{
@@ -525,7 +567,7 @@ input[type=range]{ width:100%; accent-color:var(--accent); height:32px }
   display:block; width:100%; max-width:320px; margin-inline:auto; aspect-ratio:9/16;
   border:0; border-radius:10px; background:#000; box-shadow:0 24px 60px rgba(4,12,22,.4);
 }
-.walter-nota{ margin:12px auto 0; max-width:320px; font-size:13px; color:var(--text-secondary); text-align:center }
+.quienes-foto .walter-nota{ margin:12px auto 0; max-width:320px; font-size:13px; color:var(--text-secondary); text-align:center }
 
 /* ---------- testimonios ---------- */
 .testimonios{ max-width:none; background:var(--panel-2) }
@@ -646,8 +688,12 @@ body.pausado *,body.pausado *::before,body.pausado *::after{ animation-play-stat
 
 /* redes en el pie */
 .pie-redes{ list-style:none; display:flex; flex-wrap:wrap; gap:18px; padding:0; margin:0 auto 16px; font-size:14px; font-weight:700 }
-.pie-redes a{ color:var(--text-primary); text-decoration:none; border-bottom:1px solid var(--accent-muted); padding-bottom:2px }
-.pie-redes a:hover{ border-bottom-color:var(--accent) }
+/* cada red lleva su ícono al costado; el subrayado va solo bajo el nombre */
+.pie-redes a{ display:inline-flex; align-items:center; gap:8px; color:var(--text-primary); text-decoration:none; min-height:32px }
+.pie-redes .red-ico{ width:18px; height:18px; flex:none; color:var(--accent); transition:transform .3s var(--ease) }
+.pie-redes .red-nombre{ border-bottom:1px solid var(--accent-muted); padding-bottom:2px }
+.pie-redes a:hover .red-nombre{ border-bottom-color:var(--accent) }
+.pie-redes a:hover .red-ico{ transform:translateY(-1px) scale(1.08) }
 
 /* =========================================================================
    EMBUDO DE CALIFICACIÓN (chat)
@@ -791,7 +837,7 @@ body.en-embudo .wa-float{ opacity:0; visibility:hidden; pointer-events:none; tra
   max-width:none; padding-top:clamp(104px,14vh,152px); padding-bottom:clamp(48px,7vh,80px);
   background:
     linear-gradient(to bottom, rgba(11,32,56,.7) 0%, rgba(11,32,56,.88) 58%, var(--canvas) 100%),
-    url("hero-ending.jpg") center/cover no-repeat;
+    url("hero-ending-v2.jpg") center/cover no-repeat;
 }
 .ev-hero-inner{ max-width:var(--maxw); margin-inline:auto; display:grid; gap:clamp(26px,4vw,40px) }
 .ev-hero h1{

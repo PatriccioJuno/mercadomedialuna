@@ -104,9 +104,24 @@ window.MML = {
     ],
   },
 
-  /* ---- 5 · Video del hero ------------------------------------------------- */
-  video: 'assets/hero-scrub.mp4',
-  videoLigero: 'assets/hero-scrub-lite.mp4',   // conexiones lentas y ahorro de datos
-  videoBytes: 8445931,                          // respaldo cuando falta Content-Length
-  videoLigeroBytes: 3034868,
+  /* ---- 5 · Video del hero -------------------------------------------------
+     El timelapse de la construcción (entregado por Patriccio el 24/09/2026)
+     recodificado desde el original HEVC de 10 bits: H.264 con un cuadro clave
+     cada 8 para que el scroll vaya y vuelva sin trabarse. Escritorio a CRF 18,
+     que a tamaño real no se distingue del original.
+     Cuando cambie el video, cambia el nombre del archivo: /assets/ guarda
+     imágenes y videos 7 días en el navegador y un nombre repetido dejaría a
+     quien ya visitó el sitio viendo el video viejo. */
+  video: 'assets/hero-scrub-v2.mp4',                  // 1920×1080
+  videoLigero: 'assets/hero-scrub-v2-lite.mp4',       // 1280×720: conexión lenta, ahorro de datos o pantalla chica apaisada
+  videoBytes: 7100592,                                // respaldo cuando falta Content-Length
+  videoLigeroBytes: 2947814,
+  poster: 'assets/hero-poster-v2.jpg',                // primer cuadro del video, idéntico
+  /* En celular (vertical) el hero es compacto: un recorte cuadrado centrado
+     en el mercado, que así se ve completo en el ancho del teléfono. */
+  videoMovil: 'assets/hero-scrub-v2-movil.mp4',       // 1080×1080
+  videoMovilLigero: 'assets/hero-scrub-v2-movil-lite.mp4', // 720×720
+  videoMovilBytes: 3422425,
+  videoMovilLigeroBytes: 1639454,
+  posterMovil: 'assets/hero-poster-v2-movil.jpg',
 };

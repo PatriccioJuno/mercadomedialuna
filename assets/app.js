@@ -167,29 +167,70 @@
     stage.classList.add('video-failed');
   }
 
-  function iniciarHeroUnaVez() {
-    if (cargaIniciada) return;
+  /* Qué video toca. En vertical (celular, tableta de pie) va el recorte
+     cuadrado del hero compacto; apaisado, el de 16:9. La versión ligera se
+     usa con conexión lenta o ahorro de datos, y en un celular acostado, cuya
+     pantalla no aprovecha los 1920 px. */
+  var mqMovil = matchMedia('(orientation: portrait), (max-width: 720px)');
+  var mqApaisadoChico = matchMedia('(orientation: landscape) and (pointer: coarse) and (max-height: 560px)');
+  var varianteCargada = null, cargaCtrl = null, urlBlob = null;
+
+  function variante() {
+    var ligero = conexionLenta() || (!mqMovil.matches && mqApaisadoChico.matches);
+    if (mqMovil.matches && CFG.videoMovil) {
+      return {
+        clave: ligero ? 'movil-ligero' : 'movil',
+        url: ligero ? (CFG.videoMovilLigero || CFG.videoMovil) : CFG.videoMovil,
+        bytes: ligero ? (CFG.videoMovilLigeroBytes || CFG.videoMovilBytes) : CFG.videoMovilBytes,
+        poster: CFG.posterMovil || CFG.poster
+      };
+    }
+    return {
+      clave: ligero ? 'ligero' : 'escritorio',
+      url: ligero ? (CFG.videoLigero || CFG.video) : CFG.video,
+      bytes: ligero ? (CFG.videoLigeroBytes || CFG.videoBytes) : CFG.videoBytes,
+      poster: CFG.poster
+    };
+  }
+
+  /* Carga la variante que corresponde. Si el teléfono gira y cambia la
+     variante, se abandona la descarga anterior y se carga la otra. */
+  function iniciarHero() {
+    var v = variante();
+    if (varianteCargada === v.clave) return;
+    varianteCargada = v.clave;
     cargaIniciada = true;
-    poster.style.backgroundImage = "url('assets/hero-poster.jpg')";
+    if (cargaCtrl) cargaCtrl.abort();
+    stage.classList.remove('video-ready', 'video-failed');
+    seekBusy = false; pendingTime = null;
+    if (loader) {
+      loader.classList.remove('done');
+      var aro = $('.ring circle', loader);
+      if (aro) aro.style.setProperty('--ld', 126);
+    }
+    poster.style.backgroundImage = "url('" + v.poster + "')";
     var arrancado = false;
     function arrancar() {
-      if (arrancado) return;
+      if (arrancado || varianteCargada !== v.clave) return;
       arrancado = true;
-      cargarBlob().catch(fallaVideo);
+      cargarBlob(v).catch(function () {
+        /* una descarga abandonada por el giro no es una falla */
+        if (varianteCargada === v.clave) fallaVideo();
+      });
     }
     var img = new Image();
     img.onload = arrancar; img.onerror = arrancar;
-    img.src = 'assets/hero-poster.jpg';
+    img.src = v.poster;
     setTimeout(arrancar, 4000);
     loadStart = performance.now();
   }
 
-  function cargarBlob() {
-    var ligero = conexionLenta();
-    var url = ligero ? (CFG.videoLigero || CFG.video) : CFG.video;
-    var bytes = ligero ? (CFG.videoLigeroBytes || CFG.videoBytes) : CFG.videoBytes;
+  function cargarBlob(v) {
+    var url = v.url;
+    var bytes = v.bytes;
     var ring = $('.ring circle', loader);
     var ctrl = new AbortController();
+    cargaCtrl = ctrl;
     var watchdog = setTimeout(function () { ctrl.abort(); }, 20000);
 
     return fetch(url, { signal: ctrl.signal }).then(function (res) {
@@ -214,32 +255,57 @@
       })();
     }).then(function (chunks) {
       clearTimeout(watchdog);
+      if (varianteCargada !== v.clave) return;   // el teléfono giró mientras bajaba
       if (ring) ring.style.setProperty('--ld', 0);
-      video.src = URL.createObjectURL(new Blob(chunks, { type: 'video/mp4' }));
+      var anterior = urlBlob;
+      urlBlob = URL.createObjectURL(new Blob(chunks, { type: 'video/mp4' }));
+      video.src = urlBlob;
       video.load();
+      if (anterior) URL.revokeObjectURL(anterior);
       video.addEventListener('canplay', function () {
+        if (varianteCargada !== v.clave) return;
         if (loader) loader.classList.add('done');
         stage.classList.add('video-ready');
+        /* Safari de iPhone no pinta los cuadros de un video que nunca se
+           reprodujo, aunque se le cambie currentTime. Un play y pausa mudos
+           lo despiertan; en escritorio no hace falta. */
+        if (mqMovil.matches && video.play) {
+          var pr = video.play();
+          if (pr && pr.then) pr.then(function () { video.pause(); requestSeek(heroProgress() * video.duration); }).catch(function () {});
+        }
         requestSeek(heroProgress() * video.duration);
         onScroll();
       }, { once: true });
     });
   }
 
-  /* ---- las cinco compuertas del hero estático, idénticas al CSS ---- */
+  /* ---- la compuerta del hero estático, idéntica al CSS ----
+     Hasta el 24/09/2026 el celular, la tableta de pie y el celular acostado
+     también caían al hero estático. Ahora tienen su versión compacta del
+     scroll (ver styles.css, "hero compacto"): el estático queda solo para
+     quien pidió menos movimiento. */
   var GATES = [
-    '(max-width: 720px)',
-    '(orientation: portrait) and (max-width: 1024px)',
-    '(orientation: portrait) and (pointer: coarse)',
-    '(orientation: landscape) and (pointer: coarse) and (max-height: 560px)',
     '(prefers-reduced-motion: reduce)'
   ];
   var MQLS = GATES.map(function (q) { return matchMedia(q); });
 
+  /* al girar el teléfono cambia el formato del hero: otra variante y otra
+     altura del recorrido */
+  function alCambiarFormato() {
+    if (!scrubOn) return;
+    iniciarHero();
+    bandas.forEach(function (b) { b.op = -1; b.k = -1; });
+    onScroll();
+  }
+  [mqMovil, mqApaisadoChico].forEach(function (m) {
+    if (m.addEventListener) m.addEventListener('change', alCambiarFormato);
+    else if (m.addListener) m.addListener(alCambiarFormato);
+  });
+
   function activarScrub() {
     if (scrubOn) return;
     scrubOn = true;
-    iniciarHeroUnaVez();
+    iniciarHero();
     window.addEventListener('scroll', onScroll, { passive: true });
     bandas.forEach(function (b) { b.op = -1; b.k = -1; });
     soltarEstadosFinales();
@@ -410,7 +476,9 @@
     var bw = document.createElement('button');
     bw.type = 'button';
     bw.className = 'walter-play';
-    bw.setAttribute('aria-label', 'Reproducir el video de Walter, de SCP Inmobiliaria');
+    /* el nombre accesible empieza con el texto que se ve (WCAG 2.5.3): quien
+       usa control por voz dice "clic en Mira el video de Walter" y funciona */
+    bw.setAttribute('aria-label', 'Mira el video de Walter, de SCP Inmobiliaria');
     walterFoto.replaceWith(bw);
     bw.appendChild(walterFoto);
     bw.insertAdjacentHTML('beforeend',
