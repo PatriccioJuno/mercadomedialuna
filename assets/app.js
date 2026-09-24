@@ -399,4 +399,43 @@
     });
   }
 
+  /* ---------------------------------------------------------------------
+     7 · Walter en video: su foto hace de portada y YouTube se pide recién
+         al tocar reproducir. A diferencia de los testimonios, aquí ni la
+         miniatura sale de YouTube: la portada es nuestra.
+     --------------------------------------------------------------------- */
+  var walterFoto = $('#quienes .retrato-obra');
+  var walterId = ((CFG.walter && CFG.walter.youtubeId) || '').trim();
+  if (walterFoto && walterId) {
+    var bw = document.createElement('button');
+    bw.type = 'button';
+    bw.className = 'walter-play';
+    bw.setAttribute('aria-label', 'Reproducir el video de Walter, de SCP Inmobiliaria');
+    walterFoto.replaceWith(bw);
+    bw.appendChild(walterFoto);
+    bw.insertAdjacentHTML('beforeend',
+      '<span class="walter-play-icono" aria-hidden="true"></span>' +
+      '<span class="walter-play-texto" aria-hidden="true">Mira el video de Walter</span>');
+    var notaW = document.createElement('p');
+    notaW.className = 'walter-nota';
+    notaW.textContent = 'Se carga desde YouTube solo cuando lo reproduces.';
+    bw.after(notaW);
+    /* la línea del texto que remite al video solo aparece si hay video */
+    var lineaW = $('#quienes .walter-linea');
+    if (lineaW) lineaW.hidden = false;
+    bw.addEventListener('click', function () {
+      var f = document.createElement('iframe');
+      f.className = 'walter-iframe';
+      /* playsinline: en iPhone se queda en la página en vez de saltar a
+         pantalla completa */
+      f.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(walterId) + '?autoplay=1&rel=0&playsinline=1';
+      f.title = 'Video de Walter, de SCP Inmobiliaria';
+      f.allow = 'accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen';
+      f.setAttribute('allowfullscreen', '');
+      bw.replaceWith(f);
+      /* el botón que tenía el foco ya no existe: el foco pasa al video */
+      f.focus();
+    }, { once: true });
+  }
+
 })();

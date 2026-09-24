@@ -61,6 +61,10 @@ body::before{
 @keyframes ambiente{ from{ transform:translate3d(-2%,-1%,0) scale(1) } to{ transform:translate3d(2%,2%,0) scale(1.06) } }
 
 img,svg,video{ display:block; max-width:100% }
+/* Un elemento con el atributo hidden no se ve, diga lo que diga su clase.
+   Sin esto, .pend (display:inline-block) le ganaba a hidden y en /evento se
+   veía el aviso de autorización del testimonio aunque la lógica lo ocultaba. */
+[hidden]{ display:none !important }
 h1,h2,h3{ font-weight:900; font-variation-settings:"wdth" 118; letter-spacing:-.02em; line-height:1.05; margin:0 0 .4em }
 h2{ font-size:clamp(28px,4.6vw,52px) }
 h3{ font-size:clamp(19px,2.2vw,26px); font-variation-settings:"wdth" 110 }
@@ -425,7 +429,8 @@ input[type=range]{ width:100%; accent-color:var(--accent); height:32px }
 
 /* ---------- obra ---------- */
 .obra{ max-width:none; background:var(--canvas-deep) }
-.obra-head,.obra-grid{ max-width:var(--maxw); margin-inline:auto }
+/* la nota va en la misma columna que las fotos, no pegada al borde */
+.obra-head,.obra-grid,.obra .nota{ max-width:var(--maxw); margin-inline:auto }
 .obra-grid{ display:grid; gap:16px; margin-top:32px }
 @media (min-width:760px){ .obra-grid{ grid-template-columns:repeat(3,1fr) } }
 .obra-slot{ margin:0 }
@@ -436,6 +441,13 @@ input[type=range]{ width:100%; accent-color:var(--accent); height:32px }
   border-radius:10px; border:1px solid var(--rule); box-shadow:0 18px 44px rgba(4,12,22,.38);
 }
 .obra-slot figcaption:not(.pend){ margin-top:10px; font-size:14px; color:var(--text-secondary) }
+/* la fecha de cada foto va arriba de su pie, como un sello */
+.obra-slot .obra-fecha{
+  display:block; margin-bottom:4px; color:var(--accent);
+  font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+}
+.valor-foto-pie{ margin:8px 0 0; font-size:13px; color:var(--text-secondary) }
+.valor-foto-pie .obra-fecha{ font-weight:700; color:var(--text-primary) }
 .obra .nota{ margin-top:28px }
 .slot{
   aspect-ratio:4/3; border:1px dashed var(--rule-strong); border-radius:4px;
@@ -450,7 +462,9 @@ input[type=range]{ width:100%; accent-color:var(--accent); height:32px }
 .proyecto-head,.proyecto-grid,.proyecto .nota{ max-width:var(--maxw); margin-inline:auto }
 .proyecto-head p{ color:var(--text-secondary); max-width:62ch }
 .proyecto .nota a{ color:var(--accent) }
-.proyecto-grid{ display:grid; gap:18px; margin:34px 0 26px }
+/* margin en su forma corta pisaría el margin-inline:auto de arriba y dejaría
+   la galería pegada a la izquierda en pantallas anchas: por eso va "auto" */
+.proyecto-grid{ display:grid; gap:18px; margin:34px auto 26px }
 @media (min-width:820px){ .proyecto-grid{ grid-template-columns:1fr 1fr; gap:22px } }
 .proyecto-img{ margin:0 }
 .proyecto-ancha{ grid-column:1 / -1 }
@@ -477,6 +491,41 @@ input[type=range]{ width:100%; accent-color:var(--accent); height:32px }
   aspect-ratio:640/1140; object-fit:cover; object-position:center;
   border-radius:10px; border:1px solid var(--rule); box-shadow:0 24px 60px rgba(4,12,22,.4);
 }
+/* El video de Walter. La foto de arriba hace de portada y el botón se monta
+   encima desde app.js: hasta que alguien toca reproducir no se pide nada a
+   YouTube, ni siquiera la miniatura. El Short es vertical, 9:16, casi la
+   misma proporción de la foto, así que al cambiar de portada a video la
+   sección no salta. */
+.walter-play{
+  position:relative; display:block; width:100%; max-width:320px; margin-inline:auto;
+  padding:0; border:0; background:none; border-radius:10px; cursor:pointer; color:inherit;
+}
+.walter-play .retrato-obra{ aspect-ratio:9/16 }
+.walter-play::after{
+  content:""; position:absolute; inset:0; border-radius:10px; pointer-events:none;
+  background:linear-gradient(to top, rgba(6,16,28,.78), rgba(6,16,28,.08) 50%);
+}
+.walter-play-icono{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:2;
+  width:76px; height:76px; border-radius:50%; background:var(--accent);
+  box-shadow:0 12px 34px rgba(4,12,22,.55); transition:transform .3s var(--ease), background .3s var(--ease);
+}
+.walter-play-icono::before{
+  content:""; position:absolute; left:calc(50% + 4px); top:50%; transform:translate(-50%,-50%);
+  border-left:24px solid var(--ink); border-top:15px solid transparent; border-bottom:15px solid transparent;
+}
+.walter-play-texto{
+  position:absolute; left:12px; right:12px; bottom:18px; z-index:2; text-align:center;
+  color:var(--text-primary); font-weight:700; font-size:16px; letter-spacing:.02em;
+  text-shadow:0 1px 3px rgba(5,10,18,.8);
+}
+.walter-play:hover .walter-play-icono{ transform:translate(-50%,-50%) scale(1.06); background:var(--accent-hover) }
+.walter-play:focus-visible{ outline:3px solid var(--accent); outline-offset:4px }
+.walter-iframe{
+  display:block; width:100%; max-width:320px; margin-inline:auto; aspect-ratio:9/16;
+  border:0; border-radius:10px; background:#000; box-shadow:0 24px 60px rgba(4,12,22,.4);
+}
+.walter-nota{ margin:12px auto 0; max-width:320px; font-size:13px; color:var(--text-secondary); text-align:center }
 
 /* ---------- testimonios ---------- */
 .testimonios{ max-width:none; background:var(--panel-2) }
@@ -862,7 +911,8 @@ body.en-embudo .wa-float{ opacity:0; visibility:hidden; pointer-events:none; tra
 /* ---------- por qué vale ---------- */
 .ev-valor{ max-width:none; background:var(--panel-2) }
 .ev-valor-head,.valor-grid,.ev-valor .nota{ max-width:var(--maxw); margin-inline:auto }
-.valor-grid{ display:grid; gap:16px; margin:32px 0 24px }
+/* mismo cuidado que en .proyecto-grid: "auto", o la forma corta pisa el centrado */
+.valor-grid{ display:grid; gap:16px; margin:32px auto 24px }
 @media (min-width:760px){ .valor-grid{ grid-template-columns:1fr 1fr; gap:20px } }
 .valor-card{
   background:var(--panel); border:1px solid var(--rule); border-radius:10px;

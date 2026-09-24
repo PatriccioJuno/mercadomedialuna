@@ -72,6 +72,16 @@ window.MML = {
     },
   ],
 
+  /* ---- 4a · Walter, en sus palabras (sección "Quiénes lo construyen") -----
+     Short del canal oficial @MercadoMediaLuna. Patriccio lo entregó el
+     23/09/2026 como la historia de Walter en primera persona, confirmada por
+     Walter, y con eso se cerró ese pendiente. La foto de la sección hace de
+     portada: YouTube no se toca hasta que alguien le da reproducir.
+     Vacío = la sección muestra la foto sola, sin botón. */
+  walter: {
+    youtubeId: 'ZJXQzHrq6fE',
+  },
+
   /* ---- 4b · La página del evento (evento.html) ----------------------------
      El evento se repite todos los miércoles, así que aquí no va ninguna
      fecha: la página calcula sola cuál es el próximo miércoles en hora de
