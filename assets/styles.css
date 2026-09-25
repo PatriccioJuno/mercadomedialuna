@@ -1100,7 +1100,7 @@ body.en-embudo .wa-float{ opacity:0; visibility:hidden; pointer-events:none; tra
 .sab-solo-fin{ display:none }
 body[data-fase="terminado"] .sab-solo-activo{ display:none !important }
 body[data-fase="terminado"] .sab-solo-fin{ display:block }
-body[data-fase="terminado"] .sab-precio{ opacity:.5 }
+/* (la tarjeta del precio y toda la oferta llevan sab-solo-activo: al terminar desaparecen) */
 
 /* dónde se transmite */
 .sab-plataformas{ list-style:none; display:flex; flex-wrap:wrap; gap:10px; padding:0; margin:22px 0 0 }
@@ -1126,6 +1126,7 @@ body[data-fase="terminado"] .sab-precio{ opacity:.5 }
   color:var(--accent); font-variation-settings:"wdth" 88;
 }
 .sab-precio p.sab-precio-lista{ margin-top:12px; font-size:15px; color:var(--text-secondary) }
+.sab-precio p.sab-precio-rotulo-evento{ margin-top:12px; font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-variation-settings:"wdth" 88 }
 .sab-precio s,.sab-prod s{ text-decoration-thickness:2px; text-decoration-color:rgba(242,169,59,.85) }
 /* dólares y soles en caracteres iguales (Ley 29571, art. 6) */
 .sab-precio p.sab-precio-evento{ display:flex; flex-wrap:wrap; align-items:baseline; gap:0 14px; margin-top:6px }

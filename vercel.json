@@ -58,6 +58,31 @@
       ],
       "destination": "https://mercadomedialuna.com/$1",
       "permanent": true
+    },
+    {
+      "source": "/sabado-26/",
+      "destination": "/sabado-26",
+      "permanent": false
+    },
+    {
+      "source": "/sabado26",
+      "destination": "/sabado-26",
+      "permanent": false
+    },
+    {
+      "source": "/sabado",
+      "destination": "/sabado-26",
+      "permanent": false
+    },
+    {
+      "source": "/Sabado-26",
+      "destination": "/sabado-26",
+      "permanent": false
+    },
+    {
+      "source": "/SABADO-26",
+      "destination": "/sabado-26",
+      "permanent": false
     }
   ]
 }

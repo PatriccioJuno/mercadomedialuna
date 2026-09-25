@@ -122,7 +122,7 @@
       if (elVoz) {
         elVoz.textContent = f.fase === 'antes'
           ? 'Faltan ' + d + ' días, ' + h + ' horas y ' + m + ' minutos para el evento.'
-          : 'El evento está en vivo. El descuento vence en ' + h + ' horas y ' + m + ' minutos.';
+          : 'El evento empezó. La oferta vence en ' + h + ' horas y ' + m + ' minutos.';
       }
     }
 

@@ -132,7 +132,9 @@ window.MML = {
     cierreOferta: '2026-09-26T23:59:59-05:00',   // vence el descuento
     horaTexto: '9:00 p.m.',
     pedirDocumento: 'opcional',
-    rotuloEnVivo: 'Estamos en vivo. El descuento de US$2,000 vence a la medianoche (hora de Perú). Quedan:',
+    /* no dice "estamos en vivo": nadie fijó cuánto dura la transmisión, y entre
+       el final y la medianoche sería falso */
+    rotuloEnVivo: 'El evento empezó a las 9:00 p.m. El descuento de US$2,000 (S/6,740) en 10 puestos y 2 tiendas vence a la medianoche, hora de Perú. Quedan:',
     rotuloTerminado: 'El evento del sábado 26 ya terminó y el descuento venció. Los miércoles a las 7:30 p.m. seguimos explicando el mercado en vivo.',
     saludo: [
       'Hola. Este es el registro automático del evento en vivo del sábado 26.',
