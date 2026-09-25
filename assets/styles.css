@@ -1209,3 +1209,97 @@ body[data-fase="terminado"] .sab-solo-fin{ display:block }
 .sab-terminado{ align-self:center; background:var(--panel); border:1px solid var(--rule); border-radius:12px; padding:26px }
 .sab-terminado p{ margin:0 0 10px }
 .sab-terminado .btn{ margin-top:8px }
+
+/* =========================================================================
+   Registro con protagonismo (25/09/2026) — portada, /evento y /sabado-26
+   El registro es la conversión de todas las páginas, y con el mismo azul
+   que el resto se perdía. Aquí cambia de escenario: cinta ámbar arriba,
+   resplandor cálido detrás del chat y un chat con cabecera ámbar. El ámbar
+   nunca va como letra sobre fondo claro: aquí es fondo, con texto tinta.
+   ========================================================================= */
+.hablemos{
+  position:relative; border-top:3px solid var(--accent);
+  padding-top:clamp(84px,11vh,132px); padding-bottom:clamp(72px,10vh,120px);
+  background:
+    radial-gradient(55% 70% at 80% 48%, rgba(242,169,59,.20), rgba(242,169,59,0) 70%),
+    radial-gradient(40% 50% at 12% 20%, rgba(120,170,220,.08), rgba(120,170,220,0) 70%),
+    linear-gradient(180deg, #0B2038 0%, #0F2A44 100%);
+}
+/* la cinta: anuncia la sección antes de que se lea el titular */
+.hablemos-cinta{
+  position:absolute; top:0; left:0; right:0; margin:0; max-width:none;
+  display:flex; justify-content:center; align-items:center; gap:10px; flex-wrap:wrap;
+  padding:10px var(--gutter); background:var(--accent); color:var(--ink);
+  font-weight:800; font-size:13px; letter-spacing:.12em; text-transform:uppercase;
+  font-variation-settings:"wdth" 92; text-align:center;
+}
+.hablemos-cinta span+span::before{ content:"·"; margin-right:10px; opacity:.55 }
+@media (max-width:520px){ .hablemos-cinta{ font-size:11px; letter-spacing:.08em; gap:6px } .hablemos-cinta span+span::before{ margin-right:6px } }
+.hablemos-copy h2{ font-size:clamp(30px,4.4vw,50px) }
+.hablemos-copy .kicker{ color:var(--accent) }
+/* los pasos: círculos ámbar llenos, como una hoja de ruta */
+.hablemos-pasos{ gap:14px }
+.hablemos-pasos li{ color:var(--text-primary); font-size:17px; grid-template-columns:34px 1fr }
+.hablemos-pasos li::before{ background:var(--accent); color:var(--ink); border-color:var(--accent); width:32px; height:32px; font-size:15px }
+
+/* el chat, como una app */
+.chat{
+  border:2px solid var(--accent); border-radius:16px; background:var(--panel-2); max-width:560px;
+  box-shadow:0 34px 90px rgba(3,10,20,.6), 0 0 0 7px rgba(242,169,59,.13);
+}
+.chat-head{ background:var(--accent); color:var(--ink); border-bottom:0; padding:14px 18px }
+.chat-avatar{ background:var(--ink); color:var(--accent) }
+.chat-titulo{ color:var(--ink); font-size:16px; font-weight:800 }
+.chat-paso{ color:rgba(20,24,28,.72); font-weight:700 }
+.chat-atras{ border-color:rgba(20,24,28,.45); color:var(--ink) }
+.chat-atras:hover{ border-color:var(--ink); background:rgba(20,24,28,.08) }
+.chat-atras:focus-visible{ outline:3px solid var(--ink); outline-offset:2px }
+.chat-barra{ height:4px; background:rgba(3,10,20,.45) }
+.chat-log{ padding:20px 18px 12px; min-height:200px }
+.msg-yo{ background:var(--accent); color:var(--ink); font-weight:600 }
+.chip{ border-width:2px; background:rgba(242,169,59,.08); font-size:15px }
+.chip:hover,.chip:focus-visible{ background:var(--accent); color:var(--ink) }
+.chat-resumen{ border-left-width:4px }
+/* un brillo breve cuando el chat entra en pantalla: dice "aquí es" */
+@keyframes chat-llama{
+  0%{ box-shadow:0 34px 90px rgba(3,10,20,.6), 0 0 0 7px rgba(242,169,59,.13) }
+  40%{ box-shadow:0 34px 90px rgba(3,10,20,.6), 0 0 0 14px rgba(242,169,59,.34) }
+  100%{ box-shadow:0 34px 90px rgba(3,10,20,.6), 0 0 0 7px rgba(242,169,59,.13) }
+}
+.chat.reveal.in{ animation:chat-llama 1.8s var(--ease) .5s 1 }
+@media (prefers-reduced-motion:reduce){ .chat.reveal.in{ animation:none } }
+@media (max-width:899px){ .chat{ border-radius:14px } }
+
+/* =========================================================================
+   /sabado-26 — el video de introducción (se reproduce solo, sin sonido)
+   ========================================================================= */
+.sab-video{ margin:0 0 18px; max-width:560px }
+@media (min-width:1040px){ .sab-video{ margin-left:auto } }
+.sab-video iframe{
+  display:block; width:100%; aspect-ratio:16/9; border:0; border-radius:12px; background:#000;
+  box-shadow:0 24px 60px rgba(4,12,22,.5); border:1px solid var(--rule-strong);
+}
+.sab-video.sab-video-vertical{ max-width:340px }
+.sab-video.sab-video-vertical iframe{ aspect-ratio:9/16 }
+.sab-video p{ margin:8px 0 0; font-size:13px; color:var(--text-secondary); max-width:none }
+/* al saltar al registro desde un botón, la cinta queda debajo del menú fijo, no detrás */
+.hablemos{ scroll-margin-top:72px }
+.hablemos-copy .small{ margin-top:20px }
+/* en celular la cinta se parte en dos líneas: sin separadores colgando */
+@media (max-width:520px){ .hablemos-cinta{ column-gap:16px; row-gap:2px } .hablemos-cinta span+span::before{ content:none } }
+/* tarjeta sin cita todavía: una invitación al video, no una frase inventada */
+.tcard-sin-cita{ margin:0; font-size:16px; line-height:1.45; color:var(--text-secondary); font-style:italic }
+/* En celular el chat va enseguida del título: quien toca "Quiero ver la obra"
+   tiene que ver el chat al llegar, no tener que seguir bajando. La
+   explicación de los pasos y el aviso de privacidad pasan debajo del chat.
+   Es solo visual: el orden del código no cambia, así que el lector de
+   pantalla lee la explicación antes del chat, como en escritorio. */
+@media (max-width:899px){
+  .hablemos{ padding-top:76px }
+  .hablemos-inner{ row-gap:14px }
+  .hablemos-copy{ display:contents }
+  .hablemos-copy > *{ order:4; margin-top:0 }
+  .hablemos-copy > .kicker{ order:1; margin-bottom:0 }
+  .hablemos-copy > h2{ order:2; margin-bottom:6px }
+  .hablemos-inner > .chat,.hablemos-inner > .sab-terminado{ order:3; margin-bottom:10px }
+}

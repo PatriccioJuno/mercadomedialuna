@@ -196,6 +196,39 @@
     }
   }
 
+  /* =====================================================================
+     3b · Video de introducción que arranca solo (página del sábado)
+     Se configura con un enlace de YouTube en config.js → <evento>.videoIntro.
+     Los navegadores solo dejan que un video arranque solo si va sin sonido:
+     el visitante lo activa con el altavoz del reproductor.
+     ===================================================================== */
+  function idDeYoutube(v) {
+    v = String(v || '').trim();
+    if (!v) return '';
+    var m = v.match(/(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/|\/live\/)([A-Za-z0-9_-]{11})/);
+    if (m) return m[1];
+    return /^[A-Za-z0-9_-]{11}$/.test(v) ? v : '';
+  }
+  function montarVideoIntro(valor, formato) {
+    var cajaIntro = $('#sab-video');
+    var idIntro = idDeYoutube(valor);
+    if (!cajaIntro || !idIntro) return false;
+    cajaIntro.textContent = '';
+    cajaIntro.classList.toggle('sab-video-vertical', formato === 'vertical');
+    var marcoIntro = document.createElement('iframe');
+    marcoIntro.src = 'https://www.youtube-nocookie.com/embed/' + idIntro + '?autoplay=1&mute=1&playsinline=1&rel=0';
+    marcoIntro.title = EV.videoIntroTitulo || 'Video de introducción del evento';
+    marcoIntro.allow = 'accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen';
+    marcoIntro.setAttribute('allowfullscreen', '');
+    var notaIntro = document.createElement('p');
+    notaIntro.textContent = 'El video empieza sin sonido: toca el altavoz para escucharlo.';
+    cajaIntro.appendChild(marcoIntro);
+    cajaIntro.appendChild(notaIntro);
+    cajaIntro.hidden = false;
+    return true;
+  }
+  if (EV.videoIntro) montarVideoIntro(EV.videoIntro.enlace, EV.videoIntro.formato);
+
   /* 4 · Los testimonios los arma assets/testimonios.js (foto, estrellas, cita
      y video en una sola tarjeta). */
 
@@ -660,5 +693,5 @@
   actualizarCabecera();
 
   /* para las pruebas automáticas: solo funciones, ningún dato del visitante */
-  window.__evento = { proximaSesion: proximaSesion, fase: fase, mensaje: mensajeWhatsApp };
+  window.__evento = { proximaSesion: proximaSesion, fase: fase, mensaje: mensajeWhatsApp, idDeYoutube: idDeYoutube, montarVideoIntro: montarVideoIntro };
 })();

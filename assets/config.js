@@ -76,6 +76,19 @@ window.MML = {
       autorizacion: 'Accedió a la entrevista y a su publicación (Patriccio, 25/09/2026). Falta archivar la firma.',
     },
     {
+      id: '1cvIRgGigTg',
+      nombre: 'Vilma Ferrer',
+      descripcion: 'Compradora del mercado',
+      /* sin cita todavía: los subtítulos de su video no se pudieron leer
+         (YouTube bloqueó la consulta el 25/09). Va textual cuando se tenga;
+         mientras tanto la tarjeta sale sin frase, no con una inventada. */
+      cita: '',
+      foto: 'assets/testimonio-vilma-ferrer.jpg',
+      duracion: '2:42',
+      /* entregado por Patriccio para publicar el 25/09/2026 */
+      autorizacion: 'Entregado por Patriccio para publicar (25/09/2026). Falta archivar la firma.',
+    },
+    {
       id: 'pdMXMdVjZ2o',
       nombre: 'Emilio',
       descripcion: 'Compró cuando esto era desierto',
@@ -131,6 +144,12 @@ window.MML = {
     fecha: '2026-09-26T21:00:00-05:00',          // inicio, hora de Perú
     cierreOferta: '2026-09-26T23:59:59-05:00',   // vence el descuento
     horaTexto: '9:00 p.m.',
+    /* VIDEO DE INTRODUCCIÓN: pegar aquí el enlace de YouTube tal cual (sirve
+       el normal, el corto youtu.be o el de Shorts). Aparece arriba en la
+       página y arranca solo, sin sonido. Vacío = el espacio no se muestra.
+       formato: 'horizontal' (16:9) o 'vertical' (Shorts, 9:16). */
+    videoIntro: { enlace: '', formato: 'horizontal' },
+    videoIntroTitulo: 'Video de introducción del evento del sábado 26',
     pedirDocumento: 'opcional',
     /* no dice "estamos en vivo": nadie fijó cuánto dura la transmisión, y entre
        el final y la medianoche sería falso */

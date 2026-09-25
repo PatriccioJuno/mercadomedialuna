@@ -78,6 +78,9 @@
       var cita = crear('blockquote', 'tcard-cita');
       cita.appendChild(crear('p', null, '«' + t.cita + '»'));
       cuerpo.appendChild(cita);
+    } else {
+      /* sin cita textual todavía: se invita al video, no se inventa una frase */
+      cuerpo.appendChild(crear('p', 'tcard-sin-cita', 'Toca la foto para escuchar su historia.'));
     }
     cuerpo.appendChild(crear('p', 'tcard-nombre', t.nombre || 'Comprador del mercado'));
     if (t.descripcion) cuerpo.appendChild(crear('p', 'tcard-desc', t.descripcion));
