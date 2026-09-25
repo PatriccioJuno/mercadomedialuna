@@ -113,7 +113,7 @@ window.MML = {
      imágenes y videos 7 días en el navegador y un nombre repetido dejaría a
      quien ya visitó el sitio viendo el video viejo. */
   video: 'assets/hero-scrub-v2.mp4',                  // 1920×1080
-  videoLigero: 'assets/hero-scrub-v2-lite.mp4',       // 1280×720: conexión lenta, ahorro de datos o pantalla chica apaisada
+  videoLigero: 'assets/hero-scrub-v2-lite.mp4',       // 1280×720: solo con conexión lenta o ahorro de datos
   videoBytes: 7100592,                                // respaldo cuando falta Content-Length
   videoLigeroBytes: 2947814,
   poster: 'assets/hero-poster-v2.jpg',                // primer cuadro del video, idéntico

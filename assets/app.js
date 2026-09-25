@@ -112,6 +112,8 @@
     if (pendingTime !== null) { var t = pendingTime; pendingTime = null; requestSeek(t); }
   });
   video.addEventListener('error', function () { seekBusy = false; pendingTime = null; fallaVideo(); });
+  /* red de seguridad: cada vez que el elemento se vacía (cambio de src) */
+  video.addEventListener('emptied', function () { seekBusy = false; });
 
   /* escrituras al DOM solo cuando algo cambia de verdad */
   function pintarBandas(p) {
@@ -125,7 +127,10 @@
       var k = clamp((p - b.a) / ramp, 0, 1);
       if (i === 0) k = Math.max(k, loadK);
 
-      if (Math.abs(op - b.op) > 0.004) { b.el.style.opacity = op.toFixed(3); b.op = op; }
+      if (Math.abs(op - b.op) > 0.004) {
+        b.el.style.opacity = op.toFixed(3); b.op = op;
+        if (i === bandas.length - 1) document.body.classList.toggle('fin-hero', op > 0.5);
+      }
       if (Math.abs(k - b.k) > 0.008) { b.el.style.setProperty('--k', k.toFixed(3)); b.k = k; }
     }
     var luna = document.documentElement;
@@ -169,14 +174,14 @@
 
   /* Qué video toca. En vertical (celular, tableta de pie) va el recorte
      cuadrado del hero compacto; apaisado, el de 16:9. La versión ligera se
-     usa con conexión lenta o ahorro de datos, y en un celular acostado, cuya
-     pantalla no aprovecha los 1920 px. */
-  var mqMovil = matchMedia('(orientation: portrait), (max-width: 720px)');
-  var mqApaisadoChico = matchMedia('(orientation: landscape) and (pointer: coarse) and (max-height: 560px)');
+     usa solo con conexión lenta o ahorro de datos: un celular acostado tiene
+     2500 px físicos de ancho y con la de 1280 se veía estirado al doble. */
+  var mqMovil = matchMedia('(orientation: portrait)');
+  var tactil = matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
   var varianteCargada = null, cargaCtrl = null, urlBlob = null;
 
   function variante() {
-    var ligero = conexionLenta() || (!mqMovil.matches && mqApaisadoChico.matches);
+    var ligero = conexionLenta();
     if (mqMovil.matches && CFG.videoMovil) {
       return {
         clave: ligero ? 'movil-ligero' : 'movil',
@@ -259,6 +264,10 @@
       if (ring) ring.style.setProperty('--ld', 0);
       var anterior = urlBlob;
       urlBlob = URL.createObjectURL(new Blob(chunks, { type: 'video/mp4' }));
+      /* el seek que estaba en curso sobre el video anterior muere con load()
+         y su 'seeked' no llega nunca: sin soltar la compuerta aquí, el video
+         se quedaba congelado en el cuadro 0 después de girar el teléfono */
+      seekBusy = false; pendingTime = null;
       video.src = urlBlob;
       video.load();
       if (anterior) URL.revokeObjectURL(anterior);
@@ -268,8 +277,9 @@
         stage.classList.add('video-ready');
         /* Safari de iPhone no pinta los cuadros de un video que nunca se
            reprodujo, aunque se le cambie currentTime. Un play y pausa mudos
-           lo despiertan; en escritorio no hace falta. */
-        if (mqMovil.matches && video.play) {
+           lo despiertan. Va por dispositivo táctil y no por orientación: el
+           iPhone acostado también lo necesita. */
+        if (tactil && video.play) {
           var pr = video.play();
           if (pr && pr.then) pr.then(function () { video.pause(); requestSeek(heroProgress() * video.duration); }).catch(function () {});
         }
@@ -297,7 +307,7 @@
     bandas.forEach(function (b) { b.op = -1; b.k = -1; });
     onScroll();
   }
-  [mqMovil, mqApaisadoChico].forEach(function (m) {
+  [mqMovil].forEach(function (m) {
     if (m.addEventListener) m.addEventListener('change', alCambiarFormato);
     else if (m.addListener) m.addListener(alCambiarFormato);
   });
@@ -330,12 +340,27 @@
   if (hero && 'IntersectionObserver' in window) {
     new IntersectionObserver(function (es) {
       heroVisible = es[0].isIntersecting;
+      if (!heroVisible) document.body.classList.remove('fin-hero');
       if (heroVisible && scrubOn) onScroll();
       else if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
     }, { rootMargin: '10px' }).observe(hero);
   }
 
   aplicarModoHero();
+
+  /* Los botones del final del hero están en la página desde el principio,
+     con opacidad 0 hasta el último tramo. Si el foco del teclado llega a
+     ellos antes, la página baja hasta donde se ven: si no, el contorno de
+     foco quedaría sobre algo invisible. */
+  var bandaFinal = bandsEls[bandsEls.length - 1];
+  if (bandaFinal && track) {
+    bandaFinal.addEventListener('focusin', function () {
+      if (!scrubOn || heroProgress() > 0.97) return;
+      var r = track.getBoundingClientRect();
+      window.scrollTo({ top: Math.round(window.scrollY + r.top + track.offsetHeight - window.innerHeight), behavior: 'instant' });
+      onScroll();
+    });
+  }
 
   /* ---------------------------------------------------------------------
      3 · Entradas de sección y estados finales

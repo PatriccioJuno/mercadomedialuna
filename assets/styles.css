@@ -138,7 +138,20 @@ a{ color:var(--text-primary) }
 .brand-name{ font-size:19px; font-weight:900; font-variation-settings:"wdth" 118; letter-spacing:-.01em }
 .brand-place{ font-size:10px; letter-spacing:.16em; color:rgba(246,242,234,.65); font-variation-settings:"wdth" 88 }
 @media (max-width:420px){ .brand-place{ display:none } }
-@media (max-width:520px){ .nav-cta{ display:none } }   /* el hero ya trae su propio botón */
+/* El botón del encabezado se ocultaba en celular porque "el hero ya trae su
+   propio botón". Con el hero compacto (24/09/2026) ese botón recién aparece
+   al final del recorrido, así que el encabezado lo vuelve a mostrar, en una
+   línea y más chico. Bajo 360 px no cabe: ahí queda el botón flotante. */
+.nav-cta{ white-space:nowrap }
+@media (max-width:520px){ .nav-cta{ padding:9px 14px; font-size:13px } }
+/* el nombre de la marca nunca se parte; en ≤420 px el botón cede el aire */
+.brand-name{ white-space:nowrap }
+@media (max-width:420px){ .nav{ gap:10px } .nav-cta{ padding:8px 12px } }
+@media (max-width:374px){
+  .nav{ gap:12px } .brand{ gap:10px }
+  .brand-mark{ width:38px; height:38px } .brand-name{ font-size:17px }
+}
+@media (max-width:359px){ .nav-cta{ display:none } }
 
 /* =========================================================================
    HERO
@@ -230,56 +243,15 @@ a{ color:var(--text-primary) }
 .band .line-sub{ font-size:clamp(20px,3vw,32px); font-variation-settings:"wdth" 108; color:var(--text-primary) }
 .band-5{ top:auto; bottom:16%; max-width:min(720px,84vw) }
 
-/* En pantalla ancha el texto se queda en la franja izquierda y el encuadre
-   del video se abre hacia la derecha, anclado al borde izquierdo: el mercado
-   se corre a su lado y el texto deja de caerle encima. */
+/* En pantalla ancha el texto se queda en la franja izquierda, más angosto.
+   (Hasta el 24/09/2026 aquí la portada se ensanchaba al 114-120 %, pero el
+   <video> no, porque img,svg,video{max-width:100%} lo topaba: al terminar de
+   cargar, el cuadro saltaba. Portada y video van ahora con el mismo encuadre.) */
 @media (min-width:1100px){
   .band{ max-width:min(440px,34vw) }
   .band-5{ max-width:min(620px,48vw) }
-  .poster,#hero-video{ width:114% }
-}
-@media (min-width:1500px){
-  .poster,#hero-video{ width:120% }
 }
 
-/* ---------- hero compacto: celular y cualquier pantalla vertical ----------
-   El mismo scroll que en escritorio, más corto (4.2 pantallas en vez de 7).
-   El video es un recorte cuadrado centrado en el mercado y va arriba; el
-   texto va debajo, sobre fondo liso, así que se lee igual en todos los
-   cuadros y no necesita el scrim. La barra de proyección va pegada al borde
-   inferior del video, que es lo que rotula. */
-@media (orientation:portrait), (max-width:720px){
-  .hero{ --caja:min(100vw, 58svh) }
-  .hero-track{ height:420vh }
-  .poster,#hero-video{ top:0; bottom:auto; left:0; right:auto; width:100%; height:var(--caja) }
-  .scrim{
-    bottom:auto; height:var(--caja);
-    background:linear-gradient(to bottom, rgba(6,16,28,.62) 0%, rgba(6,16,28,0) 24%, rgba(6,16,28,0) 76%, var(--canvas-deep) 100%);
-  }
-  .dust{ bottom:auto; height:var(--caja) }
-  .stage > .proyeccion{ top:var(--caja); bottom:auto; transform:translateY(-100%) }
-  /* cada banda va centrada en la zona de texto, un poco por encima de la
-     mitad: así no queda el texto arriba y un hueco vacío abajo */
-  .band,.band-5{
-    left:var(--gutter); right:var(--gutter); bottom:auto; max-width:none;
-    top:calc(var(--caja) + (100svh - var(--caja)) * .46); transform:translateY(-50%);
-  }
-  .band::before{ display:none }
-  .band .line{ font-size:clamp(28px,8vw,46px); max-width:18ch }
-  .band .line-sub{ font-size:clamp(18px,5vw,27px) }
-  .band-5 .line-title{ font-size:clamp(32px,9vw,56px) }
-  .settle-sub{ margin:.1em 0 .9em }
-  /* "Baja" y el anillo de carga van sobre el video, encima de la barra: en
-     la zona de texto chocaban con los botones del final en pantallas bajas */
-  .cue{ top:calc(var(--caja) - 60px); bottom:auto; text-shadow:0 1px 3px rgba(5,10,18,.9) }
-  .loader{ top:calc(var(--caja) - 84px); bottom:auto }
-}
-/* celular acostado: poca altura, el título final no puede ocupar media pantalla */
-@media (orientation:landscape) and (max-height:560px){
-  .band{ top:16% }
-  .band .line{ font-size:clamp(26px,9svh,44px) }
-  .band-5 .line-title{ font-size:clamp(30px,12svh,56px) }
-}
 .band-5 .line-title{ font-size:clamp(36px,7vw,84px); letter-spacing:-.03em }
 .settle-sub{ font-size:clamp(16px,2vw,21px); color:var(--text-primary); margin:.2em 0 1.1em }
 .settle-cta{ display:flex; flex-wrap:wrap; gap:12px; pointer-events:auto }
@@ -322,17 +294,90 @@ a{ color:var(--text-primary) }
 [data-entrance="asiento"] .settle-cta{ opacity:clamp(0,(var(--k,0) - .66) * 3.6,1) }
 
 /* anillo de carga y señal de scroll */
-.loader{ position:absolute; right:var(--gutter); bottom:56px; z-index:7; color:var(--accent); opacity:.9 }
+.loader{ position:absolute; right:var(--gutter); bottom:56px; z-index:7; color:var(--accent); opacity:.9; pointer-events:none }
 .loader.done{ display:none }
 .ring{ width:36px; height:36px; transform:rotate(-90deg) }
 .ring circle{ transition:stroke-dashoffset .2s linear }
 .cue{
   position:absolute; left:50%; bottom:46px; transform:translateX(-50%); z-index:6; margin:0;
-  font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:rgba(246,242,234,.72);
-  font-variation-settings:"wdth" 88; font-weight:700;
+  font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--text-primary);
+  font-variation-settings:"wdth" 88; font-weight:700; pointer-events:none;
 }
-.cue span{ display:block; animation:baja 3.4s var(--ease-soft) -1s infinite }
-@keyframes baja{ 0%,100%{ transform:translateY(0); opacity:.7 } 50%{ transform:translateY(6px); opacity:1 } }
+/* con fondo propio: sobre la arena clara del video, "Baja" suelto no llegaba
+   a 4.5:1 de contraste */
+.cue span{
+  display:block; animation:baja 3.4s var(--ease-soft) -1s infinite;
+  padding:5px 12px 5px 14px; border-radius:999px; background:rgba(6,16,28,.66);
+}
+/* solo se mueve: si además se atenuara, el fondo y el texto bajarían juntos
+   a 0.7 y el contraste caería a ~2.5:1 sobre la arena clara */
+@keyframes baja{ 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(6px) } }
+
+/* ---------- hero compacto: celular y tableta de pie ----------
+   El mismo scroll que en escritorio, más corto (4.2 pantallas en vez de 7).
+   El video es un recorte cuadrado centrado en el mercado y va arriba; el
+   texto va debajo, sobre fondo liso, así que se lee igual en todos los
+   cuadros y no necesita el scrim. La barra de proyección va pegada al borde
+   inferior del video, que es lo que rotula.
+   Solo en vertical: en un celular acostado la caja cuadrada quedaba como una
+   franja 3:1 y el texto se metía bajo el menú; acostado manda el diseño de
+   escritorio, con su ajuste de poca altura (abajo).
+   Va DESPUÉS de todas las reglas base del hero a propósito: a igual
+   especificidad gana la última, y cuando estaba antes el tamaño del título,
+   el margen del subtítulo y la posición de "Baja" quedaban pisados. "Baja"
+   llegó a estirarse en una columna invisible encima de los botones. */
+@media (orientation:portrait){
+  .hero{ --caja:min(100vw, 58svh) }
+  .hero-track{ height:420vh }
+  .poster,#hero-video{ top:0; bottom:auto; left:0; right:auto; width:100%; height:var(--caja) }
+  .scrim{
+    bottom:auto; height:var(--caja);
+    background:linear-gradient(to bottom, rgba(6,16,28,.62) 0%, rgba(6,16,28,0) 24%, rgba(6,16,28,0) 76%, var(--canvas-deep) 100%);
+  }
+  .dust{ bottom:auto; height:var(--caja) }
+  .stage > .proyeccion{ top:var(--caja); bottom:auto; transform:translateY(-100%) }
+  /* cada banda va centrada en la zona de texto, un poco por encima de la
+     mitad: así no queda el texto arriba y un hueco vacío abajo */
+  .band{
+    left:var(--gutter); right:var(--gutter); bottom:auto; max-width:none;
+    top:calc(var(--caja) + (100svh - var(--caja)) * .46); transform:translateY(-50%);
+  }
+  /* el final no se centra: es la banda más alta y en pantallas bajas se
+     metía bajo la barra. Arranca debajo del video con aire proporcional. */
+  .band-5{
+    left:var(--gutter); right:var(--gutter); bottom:auto; max-width:none;
+    top:calc(var(--caja) + clamp(14px, (100svh - var(--caja)) * .12, 64px)); transform:none;
+  }
+  .band::before{ display:none }
+  .band .line{ font-size:clamp(28px,8vw,46px); max-width:18ch }
+  .band .line-sub{ font-size:clamp(18px,5vw,27px) }
+  .band-5 .line-title{ font-size:clamp(30px,8.6vw,56px) }
+  .settle-sub{ margin:.1em 0 .8em }
+  /* "Baja" y el anillo de carga van sobre el video, encima de la barra */
+  .cue{ top:calc(var(--caja) - 64px); bottom:auto }
+  .loader{ top:calc(var(--caja) - 84px); bottom:auto }
+}
+/* celular chico de pie: el video cede alto a la zona de texto */
+@media (orientation:portrait) and (max-height:700px){
+  .hero{ --caja:min(100vw, 52svh) }
+}
+/* en los más angostos la barra entra en una sola línea */
+@media (orientation:portrait) and (max-width:360px){
+  .stage > .proyeccion{ letter-spacing:.05em; padding:7px 8px }
+}
+/* celular acostado: poca altura, el título final no puede ocupar media pantalla */
+@media (orientation:landscape) and (max-height:560px){
+  /* nunca debajo del menú fijo, que mide unos 68 px */
+  .band{ top:max(16%, 76px) }
+  .band .line{ font-size:clamp(26px,9svh,44px) }
+  .band-5 .line-title{ font-size:clamp(30px,12svh,56px) }
+  .settle-sub{ margin:.1em 0 .7em }
+}
+/* al final del hero el propio hero trae "Escríbeme por WhatsApp": el botón
+   flotante se aparta para no taparlo (en 320 px caía encima) */
+@media (orientation:portrait){
+  body.fin-hero .wa-float{ opacity:0; pointer-events:none; transform:scale(.85) }
+}
 
 /* hero estático: solo para quien pidió menos movimiento. Hasta el 24/09/2026
    también lo veían el celular y las pantallas verticales; ahora tienen el
