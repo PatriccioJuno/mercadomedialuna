@@ -638,6 +638,61 @@ input[type=range]{ width:100%; accent-color:var(--accent); height:32px }
 .testi-card iframe{ width:100%; aspect-ratio:9/16; border:0; display:block }
 .testi-meta{ padding:12px 14px; font-size:13px; color:var(--text-secondary) }
 
+/* Tarjeta de testimonio (desde el 25/09/2026): foto, estrellas, sus
+   palabras, nombre y rubro. La foto es el botón del video; al tocarla, el
+   video vertical ocupa su lugar. En celular las tarjetas se deslizan de lado. */
+.tgrid{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 330px)); justify-content:center;
+  gap:22px; max-width:var(--maxw); margin:30px auto 0;
+}
+.tgrid:empty{ display:none }
+@media (max-width:620px){
+  .tgrid{
+    display:flex; overflow-x:auto; scroll-snap-type:x mandatory; gap:14px;
+    margin-inline:calc(var(--gutter) * -1); padding:0 var(--gutter) 10px; scroll-padding-inline:var(--gutter);
+  }
+  .tgrid .tcard{ flex:0 0 min(80vw, 320px); scroll-snap-align:start }
+}
+.tcard{
+  display:flex; flex-direction:column; overflow:hidden;
+  background:var(--panel); border:1px solid var(--rule); border-radius:12px;
+  box-shadow:0 18px 44px rgba(4,12,22,.32);
+}
+.tcard-foto{
+  position:relative; display:block; width:100%; aspect-ratio:4/5; padding:0; border:0; margin:0;
+  cursor:pointer; background:var(--canvas-deep); font:inherit; color:inherit; overflow:hidden;
+}
+.tcard-foto img{ display:block; width:100%; height:100%; object-fit:cover; transition:transform .6s var(--ease) }
+.tcard-foto::after{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(to top, rgba(6,16,28,.6), rgba(6,16,28,0) 42%);
+}
+.tcard-play{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:2;
+  width:66px; height:66px; border-radius:50%; background:var(--accent);
+  box-shadow:0 10px 30px rgba(4,12,22,.5); transition:transform .3s var(--ease), background .3s var(--ease);
+}
+.tcard-play::before{
+  content:""; position:absolute; left:calc(50% + 3px); top:50%; transform:translate(-50%,-50%);
+  border-left:21px solid var(--ink); border-top:13px solid transparent; border-bottom:13px solid transparent;
+}
+.tcard-foto:hover .tcard-play{ transform:translate(-50%,-50%) scale(1.07); background:var(--accent-hover) }
+.tcard-foto:hover img{ transform:scale(1.03) }
+.tcard-foto:focus-visible{ outline:3px solid var(--accent); outline-offset:-3px; border-radius:12px 12px 0 0 }
+.tcard-dur{
+  position:absolute; right:10px; bottom:10px; z-index:2; padding:3px 9px; border-radius:999px;
+  font-size:12px; font-weight:700; letter-spacing:.03em; background:rgba(6,16,28,.78); color:var(--text-primary);
+}
+.tcard-video{ display:block; width:100%; aspect-ratio:9/16; border:0; background:#000 }
+.tcard-cuerpo{ display:flex; flex-direction:column; gap:10px; flex:1; padding:18px 18px 20px }
+.tcard-estrellas{ display:flex; gap:3px; margin:0; color:var(--accent) }
+.tcard-estrellas svg{ width:18px; height:18px; fill:currentColor }
+.tcard-cita{ margin:0; font-size:17px; line-height:1.45; color:var(--text-primary) }
+.tcard-cita p{ margin:0; max-width:none }
+.tcard-nombre{ margin:auto 0 0; padding-top:6px; font-weight:800; font-size:16px; font-variation-settings:"wdth" 108 }
+.tcard-desc{ margin:0; font-size:13px; color:var(--text-secondary) }
+@media (prefers-reduced-motion:reduce){ .tcard-foto img,.tcard-play{ transition:none } }
+
 /* ---------- faq ---------- */
 .faq-list{ margin-top:28px; border-top:1px solid var(--rule) }
 .faq details{ border-bottom:1px solid var(--rule) }
@@ -1012,22 +1067,6 @@ body.en-embudo .wa-float{ opacity:0; visibility:hidden; pointer-events:none; tra
 .valor-card h3{ margin-bottom:.3em }
 .valor-card p{ color:var(--text-secondary); font-size:16px; margin:0 }
 
-/* ---------- testimonios escritos ---------- */
-.escritos-head,.escritos,.escritos-vacio{ max-width:var(--maxw); margin-inline:auto }
-.escritos-head{ margin-top:48px; padding-top:28px; border-top:1px solid var(--rule) }
-.escritos-head h3{ margin:0 }
-.escritos{ display:grid; gap:16px; margin-top:22px }
-@media (min-width:760px){ .escritos{ grid-template-columns:1fr 1fr; gap:20px } }
-.escritos:empty{ display:none }
-.escrito{
-  margin:0; background:var(--panel); border:1px solid var(--rule); border-left:3px solid var(--accent);
-  border-radius:8px; padding:20px 22px;
-}
-.escrito blockquote{ margin:0 0 12px; font-size:17px; line-height:1.5 }
-.escrito blockquote::before{ content:"\201C" }
-.escrito blockquote::after{ content:"\201D" }
-.escrito figcaption{ font-size:13px; color:var(--text-secondary); letter-spacing:.02em }
-.escritos-vacio{ display:block; margin-top:22px; width:fit-content }
 
 /* ---------- el paso del documento ---------- */
 .chat-campo-doble{ grid-template-columns:1fr 1fr auto }
@@ -1046,3 +1085,126 @@ body.en-embudo .wa-float{ opacity:0; visibility:hidden; pointer-events:none; tra
 .pagina-evento .hablemos{ scroll-margin-top:72px }
 .pagina-evento .hablemos-copy .small{ margin-top:20px }
 .pagina-evento .hablemos-copy .small a{ color:var(--accent) }
+
+/* =========================================================================
+   /sabado-26 — evento en vivo de una sola fecha (desde el 25/09/2026)
+   Las clases van con prefijo sab- para no pisar nada del resto del sitio.
+   ========================================================================= */
+.ev-hero{ position:relative }
+/* la barra obligatoria del render de fondo, pegada al pie del hero */
+.ev-hero-barra{ position:absolute; left:0; right:0; bottom:0; margin:0 }
+.sab-hero{ padding-bottom:clamp(72px,9vh,104px) }
+.sab-hero h1{ font-size:clamp(29px,3.9vw,46px); max-width:22ch }
+
+/* según la fase del evento (evento.js pone data-fase en <body>) */
+.sab-solo-fin{ display:none }
+body[data-fase="terminado"] .sab-solo-activo{ display:none !important }
+body[data-fase="terminado"] .sab-solo-fin{ display:block }
+body[data-fase="terminado"] .sab-precio{ opacity:.5 }
+
+/* dónde se transmite */
+.sab-plataformas{ list-style:none; display:flex; flex-wrap:wrap; gap:10px; padding:0; margin:22px 0 0 }
+.sab-plataformas a{
+  display:inline-flex; align-items:center; gap:8px; min-height:40px; padding:8px 14px;
+  border-radius:999px; border:1px solid var(--rule-strong); background:rgba(11,32,56,.6);
+  color:var(--text-primary); text-decoration:none; font-weight:700; font-size:14px;
+  transition:border-color .3s var(--ease);
+}
+.sab-plataformas a:hover{ border-color:var(--accent) }
+.sab-plataformas .red-ico{ width:18px; height:18px; flex:none; color:var(--accent) }
+
+/* la oferta con su ancla, en el hero */
+.sab-precio{
+  max-width:430px; padding:22px 24px 20px; border-radius:12px;
+  background:rgba(11,32,56,.84); border:1px solid var(--rule-strong); border-top:3px solid var(--accent);
+  box-shadow:0 24px 60px rgba(4,12,22,.45); backdrop-filter:blur(4px);
+}
+@media (min-width:1040px){ .sab-precio{ margin-left:auto } }
+.sab-precio p{ margin:0; max-width:none }
+.sab-precio-rotulo{
+  font-size:13px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--accent); font-variation-settings:"wdth" 88;
+}
+.sab-precio p.sab-precio-lista{ margin-top:12px; font-size:15px; color:var(--text-secondary) }
+.sab-precio s,.sab-prod s{ text-decoration-thickness:2px; text-decoration-color:rgba(242,169,59,.85) }
+/* dólares y soles en caracteres iguales (Ley 29571, art. 6) */
+.sab-precio p.sab-precio-evento{ display:flex; flex-wrap:wrap; align-items:baseline; gap:0 14px; margin-top:6px }
+.sab-precio-num{
+  font-size:clamp(30px,3.6vw,42px); font-weight:900; font-variation-settings:"wdth" 110;
+  letter-spacing:-.02em; line-height:1.1; font-variant-numeric:tabular-nums;
+}
+.sab-precio p.sab-precio-ahorro{
+  display:inline-block; margin-top:12px; padding:5px 12px; border-radius:999px;
+  background:var(--accent); color:var(--ink); font-weight:800; font-size:14px;
+}
+.sab-precio p.sab-precio-nota{ margin-top:12px; font-size:13px; color:var(--text-secondary) }
+.sab-precio-nota a{ color:var(--accent) }
+
+/* el problema, con la cuenta del visitante */
+.sab-dolor{ padding:clamp(64px,10vh,120px) var(--gutter); background:var(--canvas-deep) }
+/* minmax(0,1fr): sin esto la columna toma el ancho mínimo de su contenido y la sección se sale de la pantalla en celular */
+.sab-dolor-inner{ max-width:var(--maxw); margin-inline:auto; display:grid; grid-template-columns:minmax(0,1fr); gap:clamp(24px,4vw,56px); align-items:center }
+.sab-dolor-inner > *{ min-width:0 }
+@media (min-width:900px){ .sab-dolor-inner{ grid-template-columns:minmax(0,1fr) minmax(0,440px) } }
+.sab-calc select{
+  width:100%; font:inherit; font-size:17px; padding:11px 12px; border-radius:8px;
+  border:1px solid var(--rule-strong); background:var(--canvas-deep); color:var(--text-primary);
+}
+.sab-calc select:focus-visible{ outline:3px solid var(--accent); outline-offset:2px }
+.sab-calc-res{ margin:6px 0 0; font-size:17px; line-height:1.45; color:var(--text-secondary); max-width:none }
+.sab-calc-res.lleno{ color:var(--text-primary) }
+.sab-calc-res strong{ display:block; margin:2px 0; font-size:clamp(26px,3vw,34px); font-weight:900; color:var(--accent); font-variant-numeric:tabular-nums }
+
+/* alquilar o tener tu puesto */
+.sab-compara{ padding:clamp(64px,10vh,120px) var(--gutter); max-width:var(--maxw); margin:0 auto }
+.sab-compara-grid{ display:grid; gap:18px; margin-top:30px }
+@media (min-width:820px){ .sab-compara-grid{ grid-template-columns:1fr 1fr } }
+.sab-col{ border-radius:12px; padding:24px 24px 26px; border:1px solid var(--rule) }
+.sab-col h3{ margin-bottom:.7em }
+.sab-col ul{ list-style:none; margin:0; padding:0; display:grid; gap:14px }
+.sab-col li{ position:relative; padding-left:32px; font-size:16px; line-height:1.5 }
+.sab-col li::before{
+  position:absolute; left:0; top:.1em; width:22px; height:22px; border-radius:50%;
+  display:grid; place-items:center; font-size:12px; font-weight:900;
+}
+.sab-col-antes{ background:rgba(11,32,56,.5) }
+.sab-col-antes li{ color:var(--text-secondary) }
+.sab-col-antes li::before{ content:"✕"; border:1px solid var(--rule-strong); color:var(--text-secondary) }
+.sab-col-despues{ background:var(--panel); border-color:rgba(242,169,59,.45) }
+.sab-col-despues li::before{ content:"✓"; background:var(--accent); color:var(--ink) }
+.sab-compara .nota{ margin-top:22px }
+.sab-compara .nota a{ color:var(--accent) }
+
+/* lo que te llevas */
+.sab-llevas{ padding:clamp(64px,10vh,120px) var(--gutter); background:var(--panel-2) }
+.sab-llevas-inner{ max-width:var(--maxw); margin-inline:auto }
+.sab-check{ list-style:none; margin:26px 0 0; padding:0; display:grid; gap:14px; max-width:760px }
+.sab-check li{ position:relative; padding-left:40px; font-size:clamp(16px,1.6vw,19px); line-height:1.5 }
+.sab-check li::before{
+  content:"✓"; position:absolute; left:0; top:.05em; width:26px; height:26px; border-radius:50%;
+  display:grid; place-items:center; background:var(--accent); color:var(--ink); font-size:14px; font-weight:900;
+}
+
+/* la oferta con todas sus condiciones */
+.sab-oferta{ padding:clamp(64px,10vh,120px) var(--gutter); max-width:var(--maxw); margin:0 auto }
+.sab-oferta-grid{ display:grid; gap:18px; margin-top:30px }
+@media (min-width:820px){ .sab-oferta-grid{ grid-template-columns:1fr 1fr } }
+.sab-prod{ background:var(--panel); border:1px solid var(--rule); border-top:3px solid var(--accent); border-radius:12px; padding:24px }
+.sab-prod h3{ margin-bottom:.2em }
+.sab-prod p.sab-prod-area{ margin:0 0 16px; font-size:14px; color:var(--text-secondary) }
+.sab-prod dl{ margin:0; display:grid; gap:14px }
+.sab-prod dt{
+  font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--text-secondary); font-variation-settings:"wdth" 88;
+}
+.sab-prod dd{ margin:4px 0 0; font-size:18px; font-weight:700; font-variant-numeric:tabular-nums }
+.sab-prod-evento dt{ color:var(--accent) }
+.sab-prod-evento dd{ font-size:clamp(22px,2.6vw,28px); font-weight:900 }
+.sab-prod p.sab-prod-nota{ margin:14px 0 0; font-size:13px; color:var(--text-secondary) }
+.sab-condiciones{ margin-top:22px; padding:20px 24px; border:1px solid var(--rule); border-radius:12px; background:rgba(11,32,56,.5) }
+.sab-condiciones h3{ font-size:17px; margin-bottom:.6em }
+.sab-condiciones ul{ margin:0; padding-left:18px; display:grid; gap:6px; font-size:14px; line-height:1.5; color:var(--text-secondary) }
+.sab-vencido{ margin:22px 0 0; font-weight:700; color:var(--accent) }
+.sab-terminado{ align-self:center; background:var(--panel); border:1px solid var(--rule); border-radius:12px; padding:26px }
+.sab-terminado p{ margin:0 0 10px }
+.sab-terminado .btn{ margin-top:8px }

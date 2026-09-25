@@ -1,5 +1,7 @@
 /* =========================================================================
-   Mercado Media Luna — página del evento de los miércoles (evento.html)
+   Mercado Media Luna — páginas de evento: /evento (todos los miércoles) y
+   /sabado-26 (una sola fecha). Cada página elige su configuración con
+   <body data-evento="evento|sabado"> → assets/config.js
    Autocontenida: no depende de app.js ni de embudo.js, que son del hero
    y del formulario largo de la portada.
    Reglas del proyecto que se respetan aquí:
@@ -13,7 +15,10 @@
   'use strict';
 
   var CFG = window.MML || {};
-  var EV = CFG.evento || {};
+  var CLAVE_EV = (document.body && document.body.getAttribute('data-evento')) || 'evento';
+  var EV = CFG[CLAVE_EV] || CFG.evento || {};
+  /* textos que cambian entre el evento semanal y uno de fecha fija */
+  var HORA_TXT = EV.horaTexto || '7:30 p.m.';
   var $ = function (s, c) { return (c || document).querySelector(s); };
   var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
   var reducido = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -54,6 +59,21 @@
     return new Date(destino - LIMA_MIN * 60000);               // instante real
   }
 
+  /* Evento de fecha fija (el sábado 26): tres fases.
+     antes     → cuenta hasta el inicio;
+     envivo    → desde el inicio hasta el cierre de la oferta, cuenta hasta el cierre;
+     terminado → ya pasó: la página lo dice y manda al evento de los miércoles. */
+  var FECHA_FIJA = EV.fecha ? new Date(EV.fecha) : null;
+  var CIERRE = EV.cierreOferta ? new Date(EV.cierreOferta) : null;
+  function fase(ahora) {
+    if (!FECHA_FIJA) return { fase: 'semanal', destino: proximaSesion(ahora) };
+    var t = ahora.getTime(), ini = FECHA_FIJA.getTime();
+    var fin = CIERRE ? CIERRE.getTime() : ini + GRACIA_MS;
+    if (t < ini) return { fase: 'antes', destino: FECHA_FIJA };
+    if (t < fin) return { fase: 'envivo', destino: new Date(fin) };
+    return { fase: 'terminado', destino: null };
+  }
+
   var fmtFecha;
   try {
     fmtFecha = new Intl.DateTimeFormat('es-PE', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'America/Lima' });
@@ -67,8 +87,44 @@
     };
     var elFecha = $('#cuenta-fecha', cuenta);
     var elVoz = $('#cuenta-voz', cuenta);
+    var elRotulo = $('#cuenta-rotulo', cuenta);
+    var rotuloOriginal = elRotulo ? elRotulo.innerHTML : '';
     var sesion = proximaSesion(new Date());
     var timer = null;
+    var faseActual = null;
+
+    /* fecha fija: rótulo y estado de la página según la fase */
+    function pintarFija(f, ahora) {
+      if (f.fase !== faseActual) {
+        faseActual = f.fase;
+        document.body.setAttribute('data-fase', f.fase);
+        if (elRotulo) {
+          if (f.fase === 'antes') elRotulo.innerHTML = rotuloOriginal;
+          else elRotulo.textContent = f.fase === 'envivo' ? (EV.rotuloEnVivo || 'En vivo ahora.') : (EV.rotuloTerminado || 'Este evento ya terminó.');
+        }
+        cuenta.classList.toggle('cuenta-ahora', f.fase === 'envivo');
+        cuenta.classList.toggle('cuenta-fin', f.fase === 'terminado');
+      }
+      if (f.fase === 'terminado') {
+        ['d', 'h', 'm', 's'].forEach(function (k) { if (campos[k]) campos[k].textContent = 0; });
+        if (elVoz) elVoz.textContent = EV.rotuloTerminado || 'Este evento ya terminó.';
+        if (timer) { clearInterval(timer); timer = null; }
+        return;
+      }
+      var falta = Math.max(0, f.destino.getTime() - ahora.getTime());
+      var seg = Math.floor(falta / 1000);
+      var d = Math.floor(seg / 86400), h = Math.floor(seg % 86400 / 3600);
+      var m = Math.floor(seg % 3600 / 60), s = seg % 60;
+      if (campos.d) campos.d.textContent = d;
+      if (campos.h) campos.h.textContent = h;
+      if (campos.m) campos.m.textContent = m;
+      if (campos.s) campos.s.textContent = s;
+      if (elVoz) {
+        elVoz.textContent = f.fase === 'antes'
+          ? 'Faltan ' + d + ' días, ' + h + ' horas y ' + m + ' minutos para el evento.'
+          : 'El evento está en vivo. El descuento vence en ' + h + ' horas y ' + m + ' minutos.';
+      }
+    }
 
     function textoFecha(d) {
       if (!fmtFecha) return 'miércoles';
@@ -77,6 +133,7 @@
 
     function pintar() {
       var ahora = new Date();
+      if (FECHA_FIJA) { pintarFija(fase(ahora), ahora); return; }
       if (ahora.getTime() > sesion.getTime() + GRACIA_MS) sesion = proximaSesion(ahora);
       var falta = Math.max(0, sesion.getTime() - ahora.getTime());
       var seg = Math.floor(falta / 1000);
@@ -92,15 +149,16 @@
          se refresca en silencio, para no interrumpir cada segundo */
       if (elVoz) {
         elVoz.textContent = falta === 0
-          ? 'La sesión de hoy empieza a las ' + HORA + ':' + String(MINUTO).padStart(2, '0') + ' p.m., hora de Perú.'
+          ? 'La sesión de hoy empieza a las ' + HORA_TXT + ', hora de Perú.'
           : 'Faltan ' + d + ' días, ' + h + ' horas y ' + m + ' minutos para la sesión del ' + textoFecha(sesion) + '.';
       }
     }
 
     function correr() {
       if (timer) clearInterval(timer);
+      timer = null;
       pintar();
-      if (!document.hidden) timer = setInterval(pintar, 1000);
+      if (!document.hidden && faseActual !== 'terminado') timer = setInterval(pintar, 1000);
     }
     document.addEventListener('visibilitychange', correr);
     correr();
@@ -138,64 +196,8 @@
     }
   }
 
-  /* =====================================================================
-     4 · Testimonios: de video y escritos
-     ===================================================================== */
-  var rail = $('#testi-rail');
-  if (rail && CFG.testimonios && CFG.testimonios.length) {
-    var vacio = $('.testi-vacio');
-    if (vacio) vacio.remove();
-    var avisoT = $('.testi-aviso');
-    if (avisoT && CFG.testimonios.some(function (t) { return /PENDIENTE/.test(t.autorizacion || ''); })) avisoT.hidden = false;
-    CFG.testimonios.forEach(function (t) {
-      var tarjeta = document.createElement('article');
-      tarjeta.className = 'testi-card';
-      tarjeta.setAttribute('role', 'listitem');
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.setAttribute('aria-label', 'Reproducir el testimonio de ' + (t.nombre || 'un comprador'));
-      b.style.backgroundImage = "url('https://i.ytimg.com/vi/" + t.id + "/hqdefault.jpg')";
-      b.addEventListener('click', function () {
-        var f = document.createElement('iframe');
-        f.src = 'https://www.youtube-nocookie.com/embed/' + t.id + '?autoplay=1&rel=0';
-        f.title = 'Testimonio de ' + (t.nombre || 'un comprador');
-        f.allow = 'accelerometer; autoplay; encrypted-media; picture-in-picture';
-        f.setAttribute('allowfullscreen', '');
-        b.replaceWith(f);
-      });
-      var meta = document.createElement('p');
-      meta.className = 'testi-meta';
-      meta.textContent = [t.nombre, t.rubro, t.fecha].filter(Boolean).join(" · ");
-      tarjeta.appendChild(b);
-      /* sin nombre ni rubro confirmados no se cuelga un rótulo vacío */
-      if (meta.textContent) tarjeta.appendChild(meta);
-      rail.appendChild(tarjeta);
-    });
-  }
-
-  var escritos = $('#escritos');
-  var lista = EV.testimoniosEscritos || [];
-  if (escritos && lista.length) {
-    var vacioE = $('.escritos-vacio');
-    if (vacioE) vacioE.remove();
-    lista.forEach(function (t) {
-      var fig = document.createElement('figure');
-      fig.className = 'escrito reveal in';
-      fig.setAttribute('role', 'listitem');
-      var q = document.createElement('blockquote');
-      q.textContent = t.texto || '';
-      var pie = document.createElement('figcaption');
-      pie.textContent = [t.nombre, t.rubro, t.fecha].filter(Boolean).join(' · ');
-      fig.appendChild(q); fig.appendChild(pie);
-      if (/PENDIENTE/.test(t.autorizacion || '')) {
-        var marca = document.createElement('p');
-        marca.className = 'pend';
-        marca.textContent = '[PENDIENTE: autorización firmada de quien lo dice]';
-        fig.appendChild(marca);
-      }
-      escritos.appendChild(fig);
-    });
-  }
+  /* 4 · Los testimonios los arma assets/testimonios.js (foto, estrellas, cita
+     y video en una sola tarjeta). */
 
   /* =====================================================================
      5 · Botones de WhatsApp sueltos
@@ -206,7 +208,7 @@
       a.setAttribute('title', 'Número de WhatsApp pendiente: ver assets/config.js');
       return;
     }
-    a.setAttribute('href', 'https://wa.me/' + CFG.whatsapp + '?text=' + encodeURIComponent('Hola, vi la página del evento de los miércoles de Mercado Media Luna y quiero información.'));
+    a.setAttribute('href', 'https://wa.me/' + CFG.whatsapp + '?text=' + encodeURIComponent(EV.mensajeWa || 'Hola, vi la página del evento de los miércoles de Mercado Media Luna y quiero información.'));
     a.setAttribute('rel', 'noopener');
     a.setAttribute('target', '_blank');
     a.addEventListener('click', function () { if (window.MMLmedir) window.MMLmedir.contacto('whatsapp_evento'); });
@@ -218,6 +220,31 @@
     new IntersectionObserver(function (es) {
       document.body.classList.toggle('en-embudo', es[0].isIntersecting);
     }, { threshold: 0.15 }).observe(seccionRegistro);
+  }
+
+  /* =====================================================================
+     5b · La cuenta del alquiler (solo en la página que la trae)
+     La misma cuenta que la calculadora de la portada: alquiler × 12 × años.
+     Los números los pone el visitante; la página no sugiere ninguno.
+     ===================================================================== */
+  var calc = $('#sab-calc');
+  if (calc) {
+    var monto = $('#sab-monto', calc), anios = $('#sab-anios', calc), res = $('#sab-calc-res', calc);
+    var fmtSoles = function (n) { try { return n.toLocaleString('es-PE'); } catch (err) { return String(n); } };
+    var cuentaAlquiler = function () {
+      var m = Math.max(0, Math.round(Number(monto.value) || 0));
+      var a = Number(anios.value) || 10;
+      res.textContent = '';
+      if (!m) { res.textContent = 'Escribe tu alquiler y aquí sale la cuenta.'; res.classList.remove('lleno'); return; }
+      res.append('En ' + a + ' años son ');
+      var cifra = document.createElement('strong');
+      cifra.textContent = 'S/ ' + fmtSoles(m * 12 * a);
+      res.append(cifra, ' que pagas y no vuelven.');
+      res.classList.add('lleno');
+    };
+    calc.addEventListener('submit', function (ev) { ev.preventDefault(); });
+    monto.addEventListener('input', cuentaAlquiler);
+    anios.addEventListener('change', cuentaAlquiler);
   }
 
   /* =====================================================================
@@ -267,11 +294,11 @@
       ],
       eco: {
         provincia: 'Sin problema. La obra se puede recorrer completa por videollamada.',
-        extranjero: 'Sin problema. Toma en cuenta que la sesión es a las 7:30 p.m. hora de Perú.'
+        extranjero: 'Sin problema. Toma en cuenta que la sesión es a las ' + HORA_TXT + ' hora de Perú.'
       }
     },
-    {
-      id: 'miercoles', texto: '¿Puedes este miércoles a las 7:30 p.m.?',
+    EV.preguntaAsistencia || {
+      id: 'miercoles', texto: '¿Puedes este miércoles a las 7:30 p.m.?', rotulo: 'Este miércoles',
       opciones: [
         { v: 'si', t: 'Sí, cuenta conmigo' },
         { v: 'otro', t: 'Prefiero otro miércoles' },
@@ -284,9 +311,10 @@
     }
   ];
 
-  var ROTULOS = { uso: 'El puesto', alquiler: 'Hoy', zona: 'Me conecto desde', miercoles: 'Este miércoles' };
+  var ROTULOS = { uso: 'El puesto', alquiler: 'Hoy', zona: 'Me conecto desde' };
+  ROTULOS[PREGUNTAS[3].id] = PREGUNTAS[3].rotulo || 'Asistencia';
 
-  var SALUDO = [
+  var SALUDO = EV.saludo || [
     'Hola. Este es el registro automático del evento de los miércoles.',
     'Son cuatro preguntas rápidas y tu nombre. Menos de un minuto.'
   ];
@@ -539,7 +567,7 @@
 
   function mensajeWhatsApp() {
     return 'Hola, soy ' + contacto.nombre + ' ' + contacto.apellidos + '. ' +
-      'Quiero registrarme al evento informativo de los miércoles, 7:30 p.m. (' + etiquetaOrigen() + ').\n' +
+      (EV.mensajeRegistro || 'Quiero registrarme al evento informativo de los miércoles, 7:30 p.m.') + ' (' + etiquetaOrigen() + ').\n' +
       lineasResumen().map(function (l) { return '• ' + l; }).join('\n') +
       (contacto.documento ? '\n• ' + (esDeFuera() ? 'Documento' : 'DNI') + ': ' + contacto.documento : '');
   }
@@ -580,7 +608,7 @@
         if (window.MMLmedir) window.MMLmedir.lead('evento_whatsapp');
         var miTurno = ++turno;
         setTimeout(function () {
-          decir([{ texto: 'Listo. Si se abrió tu WhatsApp, dale enviar y te confirmamos el lugar.', paso: 'envio' }], miTurno);
+          decir([{ texto: EV.confirmacion || 'Listo. Si se abrió tu WhatsApp, dale enviar y te confirmamos el lugar.', paso: 'envio' }], miTurno);
         }, 400);
       });
       acciones.appendChild(a);
@@ -632,5 +660,5 @@
   actualizarCabecera();
 
   /* para las pruebas automáticas: solo funciones, ningún dato del visitante */
-  window.__evento = { proximaSesion: proximaSesion, mensaje: mensajeWhatsApp };
+  window.__evento = { proximaSesion: proximaSesion, fase: fase, mensaje: mensajeWhatsApp };
 })();

@@ -41,6 +41,10 @@
     {
       "source": "/evento",
       "destination": "/evento.html"
+    },
+    {
+      "source": "/sabado-26",
+      "destination": "/sabado-26.html"
     }
   ],
   "redirects": [

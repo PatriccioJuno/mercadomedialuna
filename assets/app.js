@@ -456,39 +456,8 @@
     }, { threshold: 0.15 }).observe(seccionEmbudo);
   }
 
-  /* ---------------------------------------------------------------------
-     6 · Testimonios: fachada, sin cargar YouTube hasta el clic
-     --------------------------------------------------------------------- */
-  var rail = $('#testi-rail');
-  if (rail && CFG.testimonios && CFG.testimonios.length) {
-    $('.testi-vacio') && $('.testi-vacio').remove();
-    var aviso = $('.testi-aviso');
-    if (aviso && CFG.testimonios.some(function (t) { return /PENDIENTE/.test(t.autorizacion || ''); })) aviso.hidden = false;
-    CFG.testimonios.forEach(function (t) {
-      var card = document.createElement('article');
-      card.className = 'testi-card';
-      card.setAttribute('role', 'listitem');
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.setAttribute('aria-label', 'Reproducir el testimonio de ' + (t.nombre || 'un comprador'));
-      b.style.backgroundImage = "url('https://i.ytimg.com/vi/" + t.id + "/hqdefault.jpg')";
-      b.addEventListener('click', function () {
-        var f = document.createElement('iframe');
-        f.src = 'https://www.youtube-nocookie.com/embed/' + t.id + '?autoplay=1&rel=0';
-        f.title = 'Testimonio de ' + (t.nombre || 'un comprador');
-        f.allow = 'accelerometer; autoplay; encrypted-media; picture-in-picture';
-        f.setAttribute('allowfullscreen', '');
-        b.replaceWith(f);
-      });
-      var meta = document.createElement('p');
-      meta.className = 'testi-meta';
-      meta.textContent = [t.nombre, t.rubro, t.fecha].filter(Boolean).join(" · ");
-      card.appendChild(b);
-      /* sin nombre ni rubro confirmados no se cuelga un rótulo vacío */
-      if (meta.textContent) card.appendChild(meta);
-      rail.appendChild(card);
-    });
-  }
+  /* 6 · Los testimonios los arma assets/testimonios.js, compartido con
+     /evento y /sabado-26. */
 
   /* ---------------------------------------------------------------------
      7 · Walter en video: su foto hace de portada y YouTube se pide recién

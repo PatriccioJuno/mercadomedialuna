@@ -54,20 +54,39 @@ window.MML = {
   },
 
   /* ---- 4 · Testimonios ----------------------------------------------------
-     Agregar un testimonio = agregar un objeto a esta lista. Nada más.
-     REGLA DEL PROYECTO: cada comprador que sale en la web necesita su
-     autorización de imagen. Si el texto de "autorizacion" trae la palabra
-     PENDIENTE, la web muestra el aviso sola. */
+     Una tarjeta por comprador en la portada, /evento y /sabado-26: foto,
+     estrellas, sus palabras, nombre y rubro. Al tocar la foto se reproduce
+     el video (assets/testimonios.js).
+     REGLAS DEL PROYECTO:
+     · cada comprador que sale en la web necesita su autorización de imagen.
+       Si "autorizacion" trae la palabra PENDIENTE, la web muestra el aviso;
+     · la cita es TEXTUAL, sacada de su video, y no puede prometer
+       rentabilidad, plusvalía, fechas ni "título de propiedad". Si en el
+       video dicen algo así, se elige otra frase (ver PENDIENTES-WEB.md, E19).
+     · la foto va recortada 4:5 en assets/, con nombre nuevo si cambia. */
   testimonios: [
     {
+      id: 'B83FezzbXAg',
+      nombre: 'Julia Ortiz',
+      descripcion: 'Rubro de comida',
+      /* textual, de 0:14 a 0:21 de su video */
+      cita: 'Quiero trabajar lo que es mío, ya no alquilar, sino mi propio negocio, mi propio puesto.',
+      foto: 'assets/testimonio-julia-ortiz.jpg',
+      duracion: '1:53',
+      autorizacion: 'Accedió a la entrevista y a su publicación (Patriccio, 25/09/2026). Falta archivar la firma.',
+    },
+    {
       id: 'pdMXMdVjZ2o',
-      /* Cómo quiere aparecer todavía no se le ha preguntado. Vacío = la
-         tarjeta sale sin rótulo, que es mejor que inventarle un nombre. */
-      nombre: '',
-      rubro: '',
-      fecha: '',
-      /* Autorizó de viva voz a Patriccio el 23/09/2026. Falta archivar la
-         firma, pero la autorización existe: la web ya no muestra el aviso. */
+      nombre: 'Emilio',
+      descripcion: 'Compró cuando esto era desierto',
+      /* textual: 0:22 y 1:00 de su video */
+      cita: 'Era prácticamente el desierto, no había nada. […] Para tener un progreso hay que ver hacia delante.',
+      /* foto entregada por Patriccio el 24/09/2026. Se difuminó un letrero del
+         fondo ("pago hasta en 12 meses" y teléfonos de terceros): podía
+         leerse como una oferta de financiamiento nuestra. */
+      foto: 'assets/testimonio-emilio.jpg',
+      duracion: '2:59',
+      /* Autorizó de viva voz a Patriccio el 23/09/2026. Falta archivar la firma. */
       autorizacion: 'Verbal, 23/09/2026. Falta archivar la firma.',
     },
   ],
@@ -96,12 +115,44 @@ window.MML = {
        documento antes de la primera conversación cuesta registros).
        'obligatorio' → no se puede saltar.  'no' → ni se pregunta. */
     pedirDocumento: 'opcional',
-    /* Testimonios escritos. Cada uno necesita la autorización firmada de quien
-       lo dice, igual que los de video. Mientras la lista esté vacía, la
-       sección muestra el pendiente en vez de inventar reseñas. */
-    testimoniosEscritos: [
-      /* { texto: '', nombre: '', rubro: '', fecha: '', autorizacion: '' } */
+    /* (Los testimonios escritos pasaron a ser parte de las tarjetas de
+       testimonios, arriba en §4, el 25/09/2026.) */
+  },
+
+  /* ---- 4c · El evento en vivo del sábado 26 (sabado-26.html) ---------------
+     Fecha, hora (9:00 p.m.), modalidad (en vivo por YouTube, Instagram y
+     TikTok) y condiciones del descuento (solo para quienes asistan y se
+     unan a la comunidad, hasta la medianoche del sábado): dados por
+     Patriccio el 25/09/2026. El descuento de US$2,000 es un dato de
+     precio y está registrado en 00-fuente-de-verdad/precios-vigentes.md §2b.
+     Pasada la medianoche la página cambia sola: dice que el evento terminó
+     y manda al de los miércoles. No hay que tocar nada. */
+  sabado: {
+    fecha: '2026-09-26T21:00:00-05:00',          // inicio, hora de Perú
+    cierreOferta: '2026-09-26T23:59:59-05:00',   // vence el descuento
+    horaTexto: '9:00 p.m.',
+    pedirDocumento: 'opcional',
+    rotuloEnVivo: 'Estamos en vivo. El descuento de US$2,000 vence a la medianoche (hora de Perú). Quedan:',
+    rotuloTerminado: 'El evento del sábado 26 ya terminó y el descuento venció. Los miércoles a las 7:30 p.m. seguimos explicando el mercado en vivo.',
+    saludo: [
+      'Hola. Este es el registro automático del evento en vivo del sábado 26.',
+      'Son cuatro preguntas rápidas y tu nombre. Menos de un minuto.'
     ],
+    preguntaAsistencia: {
+      id: 'sabado', texto: '¿Te conectas este sábado 26 a las 9:00 p.m.?', rotulo: 'El sábado 26',
+      opciones: [
+        { v: 'si', t: 'Sí, me conecto' },
+        { v: 'quizas', t: 'Voy a intentarlo' },
+        { v: 'info', t: 'Mándame la información primero' }
+      ],
+      eco: {
+        quizas: 'Te mandamos los enlaces igual. El descuento es solo para quienes se conecten esa noche y se unan a la comunidad.',
+        info: 'Listo. Te mandamos la información y los enlaces de la transmisión y de la comunidad.'
+      }
+    },
+    mensajeRegistro: 'Quiero registrarme al evento en vivo del sábado 26 de septiembre, 9:00 p.m.',
+    mensajeWa: 'Hola, vi la página del evento en vivo del sábado 26 de Mercado Media Luna y quiero información.',
+    confirmacion: 'Listo. Si se abrió tu WhatsApp, dale enviar y te mandamos los enlaces de la transmisión y de la comunidad.',
   },
 
   /* ---- 5 · Video del hero -------------------------------------------------
