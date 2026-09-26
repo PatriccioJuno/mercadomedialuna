@@ -148,7 +148,7 @@ window.MML = {
        el normal, el corto youtu.be o el de Shorts). Aparece arriba en la
        página y arranca solo, sin sonido. Vacío = el espacio no se muestra.
        formato: 'horizontal' (16:9) o 'vertical' (Shorts, 9:16). */
-    videoIntro: { enlace: '', formato: 'horizontal' },
+    videoIntro: { enlace: 'https://youtu.be/CIRhBK0UnQI', formato: 'horizontal' },   // "Evento 26 de Septiembre", entregado por Patriccio el 26/09/2026
     videoIntroTitulo: 'Video de introducción del evento del sábado 26',
     pedirDocumento: 'opcional',
     /* no dice "estamos en vivo": nadie fijó cuánto dura la transmisión, y entre
