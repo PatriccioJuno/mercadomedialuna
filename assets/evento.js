@@ -104,6 +104,7 @@
         }
         cuenta.classList.toggle('cuenta-ahora', f.fase === 'envivo');
         cuenta.classList.toggle('cuenta-fin', f.fase === 'terminado');
+        if (f.fase === 'terminado' && typeof pausarVideoIntro === 'function') pausarVideoIntro();
       }
       if (f.fase === 'terminado') {
         ['d', 'h', 'm', 's'].forEach(function (k) { if (campos[k]) campos[k].textContent = 0; });
@@ -199,8 +200,8 @@
   /* =====================================================================
      3b · Video de introducción que arranca solo (página del sábado)
      Se configura con un enlace de YouTube en config.js → <evento>.videoIntro.
-     Los navegadores solo dejan que un video arranque solo si va sin sonido:
-     el visitante lo activa con el altavoz del reproductor.
+     Intenta arrancar con sonido; donde el navegador no lo deja, arranca sin
+     sonido y el primer toque en la página lo activa (ver montarVideoIntro).
      ===================================================================== */
   function idDeYoutube(v) {
     v = String(v || '').trim();
@@ -209,25 +210,158 @@
     if (m) return m[1];
     return /^[A-Za-z0-9_-]{11}$/.test(v) ? v : '';
   }
+  /* La API oficial de YouTube: hace falta para saber si el video arrancó con
+     sonido y para activarlo después sin volver a empezar. */
+  var playerIntro = null, colaApiYT = null;
+  function cargarApiYT(listo, falla) {
+    if (window.YT && window.YT.Player) { listo(); return; }
+    if (colaApiYT) { colaApiYT.push(listo); return; }
+    colaApiYT = [listo];
+    var previo = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = function () {
+      if (typeof previo === 'function') { try { previo(); } catch (err) {} }
+      var cola = colaApiYT; colaApiYT = [];
+      cola.forEach(function (f) { f(); });
+    };
+    var s = document.createElement('script');
+    s.src = 'https://www.youtube.com/iframe_api';
+    s.async = true;
+    s.onerror = falla;
+    document.head.appendChild(s);
+  }
+
+  /* Intenta arrancar CON sonido, como pidió Patriccio. Ningún navegador lo
+     permite en la primera visita sin que la persona toque algo (Chrome,
+     Safari, Edge y Firefox lo bloquean). Si se bloquea, arranca sin sonido,
+     aparece "Activar el sonido" sobre el video, y el primer toque en
+     cualquier parte de la página lo activa sin volver a empezar. */
   function montarVideoIntro(valor, formato) {
     var cajaIntro = $('#sab-video');
     var idIntro = idDeYoutube(valor);
     if (!cajaIntro || !idIntro) return false;
+    if (playerIntro && playerIntro.destroy) { try { playerIntro.destroy(); } catch (err) {} }
+    playerIntro = null;
     cajaIntro.textContent = '';
     cajaIntro.classList.toggle('sab-video-vertical', formato === 'vertical');
-    var marcoIntro = document.createElement('iframe');
-    marcoIntro.src = 'https://www.youtube-nocookie.com/embed/' + idIntro + '?autoplay=1&mute=1&playsinline=1&rel=0';
-    marcoIntro.title = EV.videoIntroTitulo || 'Video de introducción del evento';
-    marcoIntro.allow = 'accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen';
-    marcoIntro.setAttribute('allowfullscreen', '');
+    var marcoIntro = document.createElement('div');
+    marcoIntro.className = 'sab-video-marco';
+    var hueco = document.createElement('div');
+    hueco.className = 'sab-video-hueco';
+    var botonSonido = document.createElement('button');
+    botonSonido.type = 'button';
+    botonSonido.className = 'sab-sonido';
+    botonSonido.hidden = true;
+    botonSonido.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06a7 7 0 0 1 0 13.42v2.06A9 9 0 0 0 14 3.23z"/></svg><span>Activar el sonido</span>';
     var notaIntro = document.createElement('p');
-    notaIntro.textContent = 'El video empieza sin sonido: toca el altavoz para escucharlo.';
+    notaIntro.className = 'sab-video-nota';
+    notaIntro.hidden = true;
+    notaIntro.textContent = 'Toca el altavoz del video para escucharlo.';
+    marcoIntro.appendChild(hueco);
+    marcoIntro.appendChild(botonSonido);
     cajaIntro.appendChild(marcoIntro);
     cajaIntro.appendChild(notaIntro);
     cajaIntro.hidden = false;
+
+    var tituloIntro = EV.videoIntroTitulo || 'Video de introducción del evento';
+    var srcBase = 'https://www.youtube-nocookie.com/embed/' + idIntro + '?playsinline=1&rel=0';
+    var marcoPlano = null, resuelto = false, pidioSonido = false, intentos = 0, vigia = null;
+    /* al soltar, no al apoyar: en pantallas táctiles solo el toque completo
+       da permiso de sonido, y deslizar para bajar no cuenta */
+    var GESTOS = ['pointerup', 'touchend', 'keydown'];
+
+    function ponerGestos() { GESTOS.forEach(function (g) { document.addEventListener(g, activarSonido, true); }); }
+    function quitarGestos() { GESTOS.forEach(function (g) { document.removeEventListener(g, activarSonido, true); }); }
+    function sonando() {
+      try { return playerIntro.getPlayerState() === 1 && !playerIntro.isMuted(); } catch (err) { return false; }
+    }
+    function yaSuena() {
+      botonSonido.hidden = true; notaIntro.hidden = true;
+      quitarGestos(); clearInterval(vigia);
+    }
+    function pedirSonido() {
+      botonSonido.hidden = false;
+      /* si lo activa desde el propio reproductor de YouTube, el botón se va */
+      clearInterval(vigia);
+      vigia = setInterval(function () { if (sonando()) yaSuena(); }, 1000);
+    }
+    function activarSonido() {
+      pidioSonido = true;
+      intentos++;
+      quitarGestos();
+      if (playerIntro && playerIntro.unMute) {
+        try { playerIntro.unMute(); playerIntro.setVolume(100); playerIntro.playVideo(); } catch (err) {}
+        setTimeout(function () {
+          if (sonando()) { yaSuena(); return; }
+          if (intentos < 2) { ponerGestos(); return; }
+          /* el navegador exige tocar el propio reproductor (Safari del
+             iPhone): el botón se quita para que el toque llegue al altavoz */
+          botonSonido.hidden = true; notaIntro.hidden = false;
+        }, 900);
+      } else if (marcoPlano) {
+        /* sin la API no se puede quitar el silencio: se recarga con sonido,
+           que el toque del visitante sí permite */
+        marcoPlano.src = srcBase + '&autoplay=1';
+        yaSuena();
+      }
+    }
+    ponerGestos();
+    botonSonido.addEventListener('click', activarSonido);
+
+    /* si la API de YouTube no carga, un iframe simple que arranca sin sonido */
+    function planoMudo() {
+      if (resuelto) return;
+      resuelto = true;
+      marcoPlano = document.createElement('iframe');
+      marcoPlano.src = srcBase + '&autoplay=1&mute=1';
+      marcoPlano.title = tituloIntro;
+      marcoPlano.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      marcoPlano.setAttribute('allowfullscreen', '');
+      hueco.replaceWith(marcoPlano);
+      pedirSonido();
+    }
+    var esperaApi = setTimeout(planoMudo, 6000);
+
+    cargarApiYT(function () {
+      if (resuelto) return;
+      resuelto = true;
+      clearTimeout(esperaApi);
+      playerIntro = new window.YT.Player(hueco, {
+        host: 'https://www.youtube-nocookie.com',
+        videoId: idIntro,
+        playerVars: { autoplay: 1, playsinline: 1, rel: 0 },
+        events: {
+          onReady: function (e) {
+            var p = e.target;
+            try { p.getIframe().title = tituloIntro; } catch (err) {}
+            try { p.unMute(); p.setVolume(100); p.playVideo(); } catch (err) {}
+            /* ¿el navegador lo dejó sonar? */
+            var revisar = function (intento) {
+              if (pidioSonido) return;   // ya tocó: no volver a silenciarlo
+              var estado = -1, mudo = true;
+              try { estado = p.getPlayerState(); mudo = p.isMuted(); } catch (err) {}
+              if (estado === 1 && !mudo) { yaSuena(); return; }
+              if (estado === 3 && !mudo && intento < 3) { setTimeout(function () { revisar(intento + 1); }, 1000); return; }
+              /* bloqueado: sin sonido para que por lo menos se vea */
+              try { p.mute(); p.playVideo(); } catch (err) {}
+              pedirSonido();
+            };
+            setTimeout(function () { revisar(0); }, 1500);
+          }
+        }
+      });
+    }, planoMudo);
     return true;
   }
-  if (EV.videoIntro) montarVideoIntro(EV.videoIntro.enlace, EV.videoIntro.formato);
+  /* para las pruebas: estado del video, sin datos del visitante */
+  function estadoVideoIntro() {
+    if (playerIntro && playerIntro.getPlayerState) {
+      try { return { api: true, estado: playerIntro.getPlayerState(), mudo: playerIntro.isMuted() }; } catch (err) { return { api: true }; }
+    }
+    var f = $('#sab-video iframe');
+    return f ? { api: false, src: f.src } : null;
+  }
+  function pausarVideoIntro() { try { if (playerIntro && playerIntro.pauseVideo) playerIntro.pauseVideo(); } catch (err) {} }
+  if (EV.videoIntro && !(FECHA_FIJA && fase(new Date()).fase === 'terminado')) montarVideoIntro(EV.videoIntro.enlace, EV.videoIntro.formato);
 
   /* 4 · Los testimonios los arma assets/testimonios.js (foto, estrellas, cita
      y video en una sola tarjeta). */
@@ -693,5 +827,5 @@
   actualizarCabecera();
 
   /* para las pruebas automáticas: solo funciones, ningún dato del visitante */
-  window.__evento = { proximaSesion: proximaSesion, fase: fase, mensaje: mensajeWhatsApp, idDeYoutube: idDeYoutube, montarVideoIntro: montarVideoIntro };
+  window.__evento = { proximaSesion: proximaSesion, fase: fase, mensaje: mensajeWhatsApp, idDeYoutube: idDeYoutube, montarVideoIntro: montarVideoIntro, estadoVideoIntro: estadoVideoIntro };
 })();

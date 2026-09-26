@@ -146,7 +146,8 @@ window.MML = {
     horaTexto: '9:00 p.m.',
     /* VIDEO DE INTRODUCCIÓN: pegar aquí el enlace de YouTube tal cual (sirve
        el normal, el corto youtu.be o el de Shorts). Aparece arriba en la
-       página y arranca solo, sin sonido. Vacío = el espacio no se muestra.
+       página y arranca solo, con sonido donde el navegador lo deja (si no,
+       sin sonido hasta el primer toque). Vacío = el espacio no se muestra.
        formato: 'horizontal' (16:9) o 'vertical' (Shorts, 9:16). */
     videoIntro: { enlace: 'https://youtu.be/CIRhBK0UnQI', formato: 'horizontal' },   // "Evento 26 de Septiembre", entregado por Patriccio el 26/09/2026
     videoIntroTitulo: 'Video de introducción del evento del sábado 26',

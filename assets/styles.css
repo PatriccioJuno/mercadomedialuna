@@ -1281,6 +1281,8 @@ body[data-fase="terminado"] .sab-solo-fin{ display:block }
 }
 .sab-video.sab-video-vertical{ max-width:340px }
 .sab-video.sab-video-vertical iframe{ aspect-ratio:9/16 }
+/* el reproductor de YouTube trae height="390": sin esto no respeta el 16:9 */
+.sab-video iframe{ height:auto }
 .sab-video p{ margin:8px 0 0; font-size:13px; color:var(--text-secondary); max-width:none }
 /* al saltar al registro desde un botón, la cinta queda debajo del menú fijo, no detrás */
 .hablemos{ scroll-margin-top:72px }
@@ -1317,3 +1319,21 @@ body[data-fase="terminado"] .sab-solo-fin{ display:block }
 }
 /* con el video arriba, el hero arranca más pegado al menú */
 .sab-hero{ padding-top:clamp(92px,12vh,128px) }
+
+/* el video del sábado intenta sonar; si el navegador no deja, este botón */
+.sab-video-marco{ position:relative }
+.sab-video-hueco{ width:100%; aspect-ratio:16/9; border-radius:12px; background:#000 }
+.sab-video-vertical .sab-video-hueco{ aspect-ratio:9/16 }
+.sab-sonido{
+  position:absolute; left:50%; bottom:18%; transform:translateX(-50%); z-index:3;
+  display:inline-flex; align-items:center; gap:10px; padding:13px 22px; border:0; border-radius:999px;
+  background:var(--accent); color:var(--ink); font:800 16px/1 var(--display); cursor:pointer;
+  box-shadow:0 12px 34px rgba(4,12,22,.55), 0 0 0 6px rgba(242,169,59,.25);
+  animation:sonido-llama 2s var(--ease) infinite;
+}
+.sab-sonido svg{ width:22px; height:22px }
+.sab-sonido:hover{ background:var(--accent-hover) }
+.sab-sonido:focus-visible{ outline:3px solid var(--text-primary); outline-offset:3px }
+@keyframes sonido-llama{ 0%,100%{ box-shadow:0 12px 34px rgba(4,12,22,.55), 0 0 0 6px rgba(242,169,59,.25) } 50%{ box-shadow:0 12px 34px rgba(4,12,22,.55), 0 0 0 12px rgba(242,169,59,.12) } }
+@media (prefers-reduced-motion:reduce){ .sab-sonido{ animation:none } }
+.sab-video .sab-video-nota{ margin:10px 0 0; text-align:center; font-weight:700; color:var(--accent) }
